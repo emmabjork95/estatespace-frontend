@@ -1,0 +1,51 @@
+.hero {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;         
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-btns {
+  display: flex;
+  justify-content: center;   /* centrera knapparna */
+  gap: 1rem;                  /* avstånd mellan knappar */
+  margin-top: 2rem;           /* avstånd under loggan */
+}
+
+/* Grundstil för knappar */
+.btn {
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: 0.2s ease-in-out;
+}
+
+/* Outline-knapp */
+.btn-outline {
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.btn-outline:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Filled-knapp */
+.btn-filled {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
+}
+
+.btn-filled:hover {
+  background: #e5e5e5;
+}

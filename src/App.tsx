@@ -1,21 +1,16 @@
-import { useEffect } from "react";
-import { supabase } from "./supabaseClient"; 
+import { RouterProvider } from "react-router-dom";
+import "./App.css";
+import "./styles/Home.css";
+import { router } from "./Router";
+
 
 function App() {
-  useEffect(() => {
-    const testSupabase = async () => {
-      const { data, error } = await supabase
-        .from("estates") 
-        .select("*")
-        .limit(5);
-
-      console.log("Supabase frontend test:", { data, error });
-    };
-
-    testSupabase();
-  }, []);
-
-  return <div>Hej från frontend</div>;
+  return (
+    <>
+      <RouterProvider router={router}></RouterProvider>
+    </>
+  );
 }
+
 
 export default App;
