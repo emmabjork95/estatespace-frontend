@@ -4,8 +4,10 @@ import { NotFound } from "./pages/NotFound";
 import { HomeLayout } from "./pages/Layouts/HomeLayout";
 import { MainLayout } from "./pages/Layouts/MainLayout";
 import { AuthLayout } from "./pages/Layouts/AuthLayout";
-import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
+import Login from "./pages/Login";
+import { RequireAuth } from "./components/RequireAuth";
+import Dashboard from "./pages/Dashboard";
 
 export const router = createBrowserRouter([
     {
@@ -13,7 +15,7 @@ export const router = createBrowserRouter([
         element: <HomeLayout />,
         children: [
             {
-                path: "/",
+                index: true,
                 element: <Home/> 
             }
         ]
@@ -30,8 +32,13 @@ export const router = createBrowserRouter([
 
     {
         path: "/",
-        element: <MainLayout />,  
+        element: (
+        <RequireAuth>
+          <MainLayout />,  
+        </RequireAuth>
+        ),
         children: [
+          { path: "dashboard", element: <Dashboard /> },
         ]
     },
 

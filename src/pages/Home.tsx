@@ -1,6 +1,6 @@
 import "../styles/Home.css";
-import heroImage from "../assets/background.svg";
-import myImage from "../assets/estate-logo-white.svg";
+import heroImage from "../assets/background-twelve.png";
+import myImage from "../assets/estate-logo-color-singles.svg";
 import { Link } from "react-router";
 
 export const Home = () => {

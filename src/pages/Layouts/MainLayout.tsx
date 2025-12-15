@@ -1,6 +1,13 @@
-import { NavLink, Outlet } from "react-router-dom"
+import { NavLink, Outlet, useNavigate } from "react-router-dom"
+import { supabase } from "../../supabaseClient";
 
 export const MainLayout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth/login");
+  };
     return (
         <>
         <header>
@@ -16,6 +23,11 @@ export const MainLayout = () => {
                     <li>
                         <NavLink to={"/estates"}>Estates</NavLink>
                     </li>
+                     <li>
+              <button type="button" onClick={handleLogout}>
+                Logga ut
+              </button>
+            </li>
                 </ul>
             </nav>
         </header>
