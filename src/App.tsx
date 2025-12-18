@@ -4,7 +4,7 @@ import "./App.css";
 import "./styles/Home.css";
 import { router } from "./Router";
 import { AuthProvider } from "./context/AuthContext";
-import bg from "./assets/background-eleven.png";
+
 
 function App() {
 useEffect(() => {
@@ -18,8 +18,7 @@ fetch(`${base}/health`)
   return (
     <AuthProvider>
       <div
-        className="app-shell"
-        style={{ backgroundImage: `url(${bg})` }}>
+        className="app-shell">
       
       <RouterProvider router={router} />
       </div>

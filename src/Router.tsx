@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { HomeLayout } from "./pages/Layouts/HomeLayout";
 import { MainLayout } from "./pages/Layouts/MainLayout";
@@ -10,10 +9,11 @@ import { RequireAuth } from "./components/RequireAuth";
 import Dashboard from "./pages/Dashboard";
 import CreateSpaces from "./features/spaces/pages/CreateSpaces";
 import SpaceView from "./features/spaces/pages/SpaceView";
-import MySpaces from "./features/spaces/pages/MySpaces";
 import CreateItem from "./features/items/pages/CreateItem";
 import ItemDetail from "./features/items/pages/ItemDetail";
 import EditItem from "./features/items/pages/EditItem";
+import Home from "./pages/Home";
+import EditSpace from "./features/spaces/pages/EditSpace";
 
 export const router = createBrowserRouter([
     {
@@ -40,17 +40,18 @@ export const router = createBrowserRouter([
         path: "/",
         element: (
         <RequireAuth>
-          <MainLayout />,  
+          <MainLayout />
         </RequireAuth>
         ),
         children: [
           { path: "dashboard", element: <Dashboard /> },
           { path: "spaces/new", element: <CreateSpaces /> },
           { path: "spaces/:spacesID", element: <SpaceView /> },
-          { path: "spaces/owned", element: <MySpaces /> },
           { path: "spaces/:spacesID/items/new", element: <CreateItem /> },
           { path: "items/:itemsID", element: <ItemDetail /> },
           { path: "items/:itemsID/edit", element: <EditItem /> },
+          { path: "spaces/:spacesID/edit", element: <EditSpace /> },
+
 
 
 

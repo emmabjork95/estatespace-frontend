@@ -4,4 +4,6 @@
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed; /* valfritt */
+min-width: 100vw;
+
 }

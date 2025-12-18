@@ -1,48 +1,167 @@
-.hero {
-  width: 100vw;
+/* Wrapper */
+.landing {
   height: 100vh;
+  overflow-y: auto;
+
+  /* Scroll-snap (snyggt!) */
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+/* Varje panel är en hel skärm */
+.panel {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;         /* centrerar panel-inner i mitten */
+  scroll-snap-align: start;
+  padding: 60px 20px;
+}
+
+/* Innehåll */
+.panel-inner {
+  width: min(980px, 100%);
+  margin-inline: auto;         /* säkerställer centrerat block */
+  text-align: center;          /* 👈 centrerar rubriker, text, knappar */
+}
+
+/* Rubriker */
+.panel h1 {
+  font-size: 56px;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.panel h2 {
+  font-size: 40px;
+  margin: 0 0 12px;
+}
+
+/* Text */
+.panel p {
+  font-size: 20px;
+  max-width: 56ch;
+  opacity: 0.9;
+
+  margin: 0 auto;              /* 👈 centrerar textblocket */
+}
+
+/* Färger */
+.panel--white {
+  background: #fff;
+  color: #111;
+}
+
+.panel--pink {
+  background: #ff4d7d;
+  color: #fff;
+}
+
+.panel--lavender {
+  background: #b9a7ff;
+  color: #111;
+}
+
+.panel--dark {
+  background: #111;
+  color: #fff;
+}
+
+/* “Fake” bilder (byt till riktiga img senare) */
+.hero-images {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 180px));
+  gap: 14px;
+  margin: 24px auto 28px;      /* 👈 centrerar hela griden */
+  justify-content: center;      /* centrerar grid-innehållet */
+}
+
+.img-card {
+  
+  border-radius: 18px;
+  overflow: hidden; /* viktigt */
+ 
+}
+
+.img-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Knapp */
+.cta {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #e60023;
+  color: #fff;
+}
+
+.cta--light {
+  background: #fff;
+  color: #111;
+}
+
+/* Logo (homepage) */
+.logo-home-wrapper {
   display: flex;
-  flex-direction: column;         
-  justify-content: center;
+  justify-content: center;  /* horisontellt */
+  align-items: center;      /* vertikalt */
+  margin-bottom: 18px;
+}
+
+.logo-img-home {
+  height: 160px;
+  width: auto;
+  display: block;
+}
+
+/* Tvåkolumns-layout */
+.panel-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* text | bild */
   align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  gap: 40px;
 }
 
-.hero-btns {
+/* Text till vänster */
+.panel-text {
+  text-align: left;
+  min-width: 20vw;
+  padding-right: 20px;
+  
+}
+
+/* Bild till höger */
+.panel-media {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
+  justify-content: right;
+  
 }
 
-.btn {
-  padding: 0.9rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  text-decoration: none;
-  letter-spacing: 0.5px;
-  transition: 0.2s ease-in-out;
+.title-section-three{
+  color: #363433;
+
 }
 
-.btn-outline {
-  background: transparent;
-  border: 2px solid #ffffff;
-  color: #ffffff;
+/* Mobil */
+@media (max-width: 520px) {
+  .panel h1 {
+    font-size: 44px;
+  }
+
+  .panel h2 {
+    font-size: 32px;
+  }
+
+  .hero-images {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .logo-img-home {
+    height: 130px;
+  }
 }
 
-.btn-outline:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.btn-filled {
-  background: #ffffff;
-  color: #000000;
-  border: 2px solid #ffffff;
-}
-
-.btn-filled:hover {
-  background: #e5e5e5;
-}

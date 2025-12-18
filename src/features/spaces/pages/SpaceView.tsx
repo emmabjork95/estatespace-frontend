@@ -4,6 +4,8 @@ import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { type ItemListItem  } from "../../items/ItemsTypes";
 import {type Space } from "../SpacesTypes";
+import "../styles/SpaceView.css";
+
 
 
 const SpaceView = () => {
@@ -72,79 +74,112 @@ const SpaceView = () => {
     fetchSpaceAndItems();
   }, [spacesID]);
 
-  return (
-    <div
-      className="space-page"
-    >
-      <div className="space-card">
-        {loading && <p>Loading...</p>}
+return (
+  <div className="space-page">
+    {loading && <p className="space-loading">Laddar...</p>}
 
-        {!loading && errorMessage && (
-          <p className="error-message">{errorMessage}</p>
-        )}
+    {!loading && errorMessage && (
+      <p className="error-message">{errorMessage}</p>
+    )}
 
-        {!loading && !errorMessage && space && (
-          <>
-            <h1 className="space-title">{space.name}</h1>
-            {space.description && (
-              <p className="space-description">{space.description}</p>
-            )}
+    {!loading && !errorMessage && space && (
+      <>
+        <header className="space-hero">
+          <div className="space-heroTop">
+            <button
+              className="btn btn-ghost"
+              type="button"
+              onClick={() => navigate("/dashboard")}
+              aria-label="Back to dashboard"
+            >
+              ← Tillbaka
+            </button>
 
-            <div className="space-actions">
+            <div className="space-heroActions">
+              <button className="btn btn-ghost" type="button">Filter</button>
+              <button className="btn btn-ghost" type="button">Kategori</button>
               <button
-                className="primary-btn"
-                onClick={() => navigate("/dashboard")}
-              >
-                Back to dashboard
-              </button>
-
-              <button
-                className="secondary-btn"
+                className="btn btn-primary"
+                type="button"
                 onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
               >
-                Add item
+                + Lägg till föremål
+              </button>
+              <button
+  className="btn btn-ghost"
+  type="button"
+  onClick={() => navigate(`/spaces/${space.spaces_id}/edit`)}
+>
+  Edit space
+</button>
+
+            </div>
+          </div>
+
+          <h1 className="space-title">{space.name}</h1>
+
+          {space.description && (
+            <p className="space-description">{space.description}</p>
+          )}
+        </header>
+
+        <section className="items-section">
+          <div className="items-header">
+            <h2 className="items-title">Items</h2>
+            <span className="items-count">{items.length} st</span>
+          </div>
+
+          {items.length === 0 ? (
+            <div className="empty-state">
+              <h3>Inga föremål ännu</h3>
+              <p>Lägg till ditt första föremål för att börja organisera.</p>
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
+              >
+                + 
               </button>
             </div>
-
-            <h2 className="space-subtitle">Items</h2>
-
-            {items.length === 0 && <p>No items added yet.</p>}
-
-            {items.length > 0 && (
-              <ul className="items-list">
-                {items.map((item) => (
-                  <li
-                    key={item.items_id}
-                    className="item-card"
-                    onClick={() => navigate(`/items/${item.items_id}`)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") navigate(`/items/${item.items_id}`);
-                    }}
-                  >
-                    {item.image_url && (
-                      <img
-                        className="item-detail-image"
-                        src={item.image_url}
-                        alt={item.name}
-                      />
+          ) : (
+            <div className="items-grid" aria-label="Items">
+              {items.map((item) => (
+                <button
+                  key={item.items_id}
+                  type="button"
+                  className="item-card"
+                  onClick={() => navigate(`/items/${item.items_id}`)}
+                >
+                  <div className="item-thumb">
+                    {item.image_url ? (
+                      <img src={item.image_url} alt={item.name} />
+                    ) : (
+                      <div className="item-thumbPlaceholder" />
                     )}
+                  </div>
+                  <div className="item-meta">
+                    <div className="item-name">{item.name}</div>
+                  </div>
+                </button>
+              ))}
 
-                    <div className="item-info">
-                      <h3 className="item-title">{item.name}</h3>
-                      <p className="item-meta">Status: {item.status}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  );
+              <button
+                type="button"
+                className="item-card item-card--add"
+                onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
+              >
+                <div className="addPlus">+</div>
+                <div className="addText">Lägg till föremål</div>
+              </button>
+            </div>
+          )}
+        </section>
+      </>
+    )}
+  </div>
+);
+
+
 };
 
 export default SpaceView;
-

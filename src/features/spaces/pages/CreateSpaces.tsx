@@ -2,6 +2,7 @@ import { type FormEvent } from "react";
 import { useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import "../styles/CreateSpace.css";
 
 const CreateSpaces = () => {
   const navigate = useNavigate();

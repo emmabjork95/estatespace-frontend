@@ -1,0 +1,109 @@
+/* Sida */
+.create-space-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+/* Card */
+.create-space-card {
+  width: 100%;
+  max-width: 520px;
+
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+
+  border-radius: 16px;
+  padding: 40px 36px;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Titel */
+.create-space-title {
+  margin: 0 0 32px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+/* Form */
+.create-space-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Field */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 700;
+}
+
+.field input,
+.field textarea {
+  font-family: inherit;
+  font-size: 16px;
+
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+
+  background: white;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #2f7f77;
+}
+
+/* Error */
+.error-message {
+  color: #b00020;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Primary button – matcha resten av appen */
+.primary-btn {
+  margin-top: 10px;
+  padding: 14px;
+
+  background: #b193e0; 
+  color: white;
+
+  border: none;
+  border-radius: 12px;
+
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #a97bf1;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .create-space-card {
+    padding: 32px 24px;
+  }
+
+  .create-space-title {
+    font-size: 26px;
+  }
+}

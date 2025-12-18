@@ -1,0 +1,237 @@
+.space-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.space-loading {
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Hero / header */
+.space-hero {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  margin-bottom: 22px;
+}
+
+.space-heroTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.space-heroActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.space-title {
+  margin: 8px 0 6px;
+  text-align: center;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.space-description {
+  text-align: center;
+  margin: 0;
+  opacity: 0.85;
+  max-width: 70ch;
+  margin-inline: auto;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  user-select: none;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-ghost {
+  background: rgba(0,0,0,0.05);
+  color: rgba(0,0,0,0.85);
+}
+
+.btn-ghost:hover {
+  background: rgba(0,0,0,0.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.btn-primary {
+  background: #2f7f77;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 10px 22px rgba(47,127,119,0.25);
+  transform: translateY(-1px);
+}
+
+/* Items section header */
+.items-section {
+  margin-top: 18px;
+}
+
+.items-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 10px 4px 14px;
+}
+
+.items-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.items-count {
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+/* Grid */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .items-grid {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .items-grid {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .items-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Item cards */
+.item-card {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.05);
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(47,127,119,0.35);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.10);
+}
+
+.item-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.04);
+  display: grid;
+  place-items: center;
+}
+
+.item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-thumbPlaceholder {
+  width: 70%;
+  height: 55%;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.10);
+}
+
+.item-meta {
+  padding-top: 10px;
+}
+
+.item-name {
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.item-sub {
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+/* Add card */
+.item-card--add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  height: 100%; /* VIKTIGT */
+  padding: 12px;
+
+  border-style: dashed;
+  border-color: rgba(0,0,0,0.2);
+  background: #fff;
+}
+
+.addPlus {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.addText {
+  font-weight: 800;
+  opacity: 0.8;
+}
+
+/* Empty state */
+.empty-state {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.empty-icon {
+  font-size: 34px;
+  margin-bottom: 6px;
+}
