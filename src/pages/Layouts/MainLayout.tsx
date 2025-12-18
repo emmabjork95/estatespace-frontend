@@ -36,12 +36,12 @@ export const MainLayout = () => {
     {/* HÖGER */}
     <ul className="nav-right">
       <li>
-        <NavLink className="nav-link" to="/estates">
+        <NavLink className="nav-link" to="/dashboard">
           Spaces
         </NavLink>
       </li>
         <li>
-        <NavLink className="nav-link" to="/estates">
+        <NavLink className="nav-link" to="/profile">
           Settings
         </NavLink>
       </li>

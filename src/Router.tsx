@@ -14,6 +14,7 @@ import ItemDetail from "./features/items/pages/ItemDetail";
 import EditItem from "./features/items/pages/EditItem";
 import Home from "./pages/Home";
 import EditSpace from "./features/spaces/pages/EditSpace";
+import { Profile } from "./features/auth/pages/Profile";
 
 export const router = createBrowserRouter([
     {
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
+      
     ],
   },
 
@@ -51,6 +53,7 @@ export const router = createBrowserRouter([
           { path: "items/:itemsID", element: <ItemDetail /> },
           { path: "items/:itemsID/edit", element: <EditItem /> },
           { path: "spaces/:spacesID/edit", element: <EditSpace /> },
+          { path: "profile", element: <Profile /> },
 
 
 
