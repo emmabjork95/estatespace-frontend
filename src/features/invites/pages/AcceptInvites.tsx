@@ -10,6 +10,8 @@ type InviteRow = {
 };
 
 export function AcceptInvite() {
+  console.log("ACCEPT INVITE – NY VERSION KÖRS");
+
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -30,6 +32,26 @@ export function AcceptInvite() {
         return;
       }
 
+      const { data: inviteData, error: inviteError } = await supabase
+        .from("invitations")
+        .select("invited_email, used, status, spaces_id")
+        .eq("token", token)
+        .single();
+
+      if (inviteError || !inviteData) {
+        setLoading(false);
+        setErrorMessage("Inbjudan hittades inte, eller så har du inte behörighet.");
+        return;
+      }
+
+      if (inviteData.used || inviteData.status === "accepted") {
+        setLoading(false);
+        setErrorMessage("Den här inbjudan är redan använd.");
+        return;
+      }
+
+      setInvite(inviteData as InviteRow);
+
       const {
         data: { user },
         error: userError,
@@ -37,35 +59,27 @@ export function AcceptInvite() {
 
       if (userError || !user) {
         setLoading(false);
-        setErrorMessage("Du måste vara inloggad för att acceptera en inbjudan.");
+        navigate(`/auth/login?redirect=/auth/invite/${token}`);
         return;
       }
 
       setCurrentEmail(user.email ?? null);
-
-      const { data, error } = await supabase
-        .from("invitations")
-        .select("invited_email, used, status, spaces_id")
-        .eq("token", token)
-        .single();
-
       setLoading(false);
-
-      if (error || !data) {
-        setErrorMessage("Inbjudan hittades inte, eller så har du inte behörighet.");
-        return;
-      }
-
-      if (data.used || data.status === "accepted") {
-        setErrorMessage("Den här inbjudan är redan använd.");
-        return;
-      }
-
-      setInvite(data as InviteRow);
     };
 
     loadInvite();
-  }, [token]);
+  }, [token, navigate]);
+
+  const handleSignOutAndContinue = async () => {
+    if (!token) return;
+    await supabase.auth.signOut();
+    navigate(`/auth/login?redirect=/auth/invite/${token}`);
+  };
+
+  const handleGoToLogin = () => {
+    if (!token) return;
+    navigate(`/auth/login?redirect=/auth/invite/${token}`);
+  };
 
   const handleAccept = async () => {
     setErrorMessage(null);
@@ -93,6 +107,11 @@ export function AcceptInvite() {
 
   if (loading) return <p>Laddar inbjudan...</p>;
 
+  const emailMismatch =
+    !!invite &&
+    !!currentEmail &&
+    currentEmail.toLowerCase() !== invite.invited_email.toLowerCase();
+
   return (
     <div style={{ maxWidth: 520 }}>
       <h1>Acceptera inbjudan</h1>
@@ -105,20 +124,30 @@ export function AcceptInvite() {
             Inbjudan är skickad till: <strong>{invite.invited_email}</strong>
           </p>
 
-          {currentEmail && currentEmail.toLowerCase() !== invite.invited_email.toLowerCase() && (
-            <p className="error-message">
-              Du är inloggad som <strong>{currentEmail}</strong>, men inbjudan är för{" "}
-              <strong>{invite.invited_email}</strong>. Logga in med rätt konto.
-            </p>
+          {emailMismatch && (
+            <>
+              <p className="error-message">
+                Du är inloggad som <strong>{currentEmail}</strong>, men inbjudan är för{" "}
+                <strong>{invite.invited_email}</strong>.
+              </p>
+
+              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                <button type="button" onClick={handleSignOutAndContinue}>
+                  Logga ut och fortsätt
+                </button>
+
+                <button type="button" onClick={handleGoToLogin}>
+                  Logga in med rätt konto
+                </button>
+              </div>
+            </>
           )}
 
           <button
             type="button"
             onClick={handleAccept}
-            disabled={
-              !currentEmail ||
-              currentEmail.toLowerCase() !== invite.invited_email.toLowerCase()
-            }
+            disabled={!currentEmail || emailMismatch}
+            style={{ marginTop: 12 }}
           >
             Acceptera och gå med
           </button>

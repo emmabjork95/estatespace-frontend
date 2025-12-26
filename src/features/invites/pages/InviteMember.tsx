@@ -5,15 +5,17 @@ type Props = {
   spacesID: string;
 };
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 export function InviteMember({ spacesID }: Props) {
   const [email, setEmail] = useState("");
-  const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleInvite = async () => {
     setErrorMessage(null);
-    setInviteLink(null);
+    setSuccess(false);
     setLoading(true);
 
     const cleanEmail = email.trim().toLowerCase();
@@ -22,52 +24,46 @@ export function InviteMember({ spacesID }: Props) {
       setErrorMessage("Skriv in en e-postadress.");
       return;
     }
+    
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
+    if (sessionError || !accessToken) {
       setLoading(false);
-      setErrorMessage("Du måste vara inloggad.");
+      setErrorMessage("Du måste vara inloggad för att bjuda in.");
       return;
     }
 
-    const token = crypto.randomUUID();
+    try {
+      const res = await fetch(`${API_BASE}/spaces/${spacesID}/invite-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ email: cleanEmail }),
+      });
 
-    const { error } = await supabase.from("invitations").insert({
-      spaces_id: spacesID,
-      profiles_id: user.id,
-      invited_email: cleanEmail,
-      token,
-      status: "pending",
-      used: false,
-    });
+      const data = await res.json();
 
-    setLoading(false);
+      if (!data.ok) {
+        setErrorMessage(data.error ?? "Kunde inte skicka inbjudan.");
+        return;
+      }
 
-    if (error) {
-      setErrorMessage(error.message);
-      return;
+      setEmail("");
+      setSuccess(true);
+    } catch (err: any) {
+      setErrorMessage(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const link = `${window.location.origin}/auth/invite/${token}`;
-    setInviteLink(link);
-    setEmail("");
-  };
-
-  const copyLink = async () => {
-    if (!inviteLink) return;
-    await navigator.clipboard.writeText(inviteLink);
-    alert("Länken är kopierad ✅");
   };
 
   return (
-    <section style={{ marginTop: 16 }}>
-
+    <section style={{ marginTop: 16, maxWidth: 400 }}>
       <label>
-        E-post
+        E-postadress
         <input
           type="email"
           value={email}
@@ -77,20 +73,11 @@ export function InviteMember({ spacesID }: Props) {
       </label>
 
       <button type="button" onClick={handleInvite} disabled={loading}>
-        {loading ? "Skapar..." : "Skapa inbjudan"}
+        {loading ? "Skickar..." : "Skicka inbjudan"}
       </button>
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-      {inviteLink && (
-        <div style={{ marginTop: 10 }}>
-          <p>Kopiera och skicka denna länk:</p>
-          <input value={inviteLink} readOnly style={{ width: "100%" }} />
-          <button type="button" onClick={copyLink}>
-            Kopiera länk
-          </button>
-        </div>
-      )}
+      {success && <p style={{ color: "green" }}>Inbjudan skickad ✅</p>}
     </section>
   );
 }
