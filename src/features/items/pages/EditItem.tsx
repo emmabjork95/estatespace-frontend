@@ -223,7 +223,7 @@ const EditItem = () => {
             <div className="edit-item-actions">
               <button
                 type="button"
-                className="danger-btn"
+                className="btn btn-danger"
                 onClick={handleDelete}
                 disabled={loading}
               >

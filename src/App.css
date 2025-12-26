@@ -3,7 +3,10 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* valfritt */
+  background-attachment: fixed; 
 min-width: 100vw;
 
+}
+*, *::before, *::after {
+  box-sizing: border-box;
 }

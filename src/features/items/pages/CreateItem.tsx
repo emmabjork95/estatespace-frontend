@@ -39,8 +39,6 @@ const CreateItem = () => {
       return;
     }
 
-    // 1) (Valfritt) Ladda upp bild till Supabase Storage
-    // Skapa en bucket i Supabase Storage, t.ex. "item-images"
     let imageUrl: string | null = null;
 
     if (file) {
@@ -65,7 +63,6 @@ const CreateItem = () => {
       imageUrl = publicData.publicUrl;
     }
 
-    // 2) Skapa item i databasen
     const { data, error } = await supabase
       .from("items")
       .insert({
@@ -86,10 +83,8 @@ const CreateItem = () => {
       return;
     }
 
-    // 3) Redirect tillbaka till space-vyn (eller item detail om du har)
     if (data) {
       navigate(`/spaces/${spacesID}`);
-      // alternativt senare: navigate(`/items/${data.items_id}`);
     }
   };
 

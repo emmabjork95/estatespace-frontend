@@ -1,4 +1,3 @@
-// src/components/RequireAuth.tsx
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -16,7 +15,6 @@ export const RequireAuth = ({ children }: Props) => {
   }
 
   if (!user) {
-    // Skicka användaren till login, och kom ihåg var hen var
     return (
       <Navigate
         to="/auth/login"

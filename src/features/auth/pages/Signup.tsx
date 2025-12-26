@@ -14,13 +14,12 @@ export function Signup() {
     e.preventDefault();
     setErrorMessage(null);
 
-    // 1) Skapa användare i Supabase Auth
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          name, // auth metadata (valfritt men nice)
+          name, 
         },
       },
     });
@@ -36,11 +35,10 @@ export function Signup() {
       return;
     }
 
-    // 2) Skapa profil kopplad till auth.users.id
     const { error: profileError } = await supabase.from("profiles").insert({
       profiles_id: user.id,
       name: name,
-      email: email, // valfritt: du kan ta bort denna om du inte vill dubbellagra
+      email: email,
     });
 
     if (profileError) {
@@ -48,7 +46,6 @@ export function Signup() {
       return;
     }
 
-    // 3) Vidare till login
     navigate("/auth/login");
   };
 

@@ -30,7 +30,6 @@ const Login = () => {
       return;
     }
 
-    // Inloggning lyckades -> gå till dashboard
     if (data.session) {
       navigate("/dashboard");
     }

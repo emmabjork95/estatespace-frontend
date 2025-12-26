@@ -11,8 +11,17 @@ type SpaceCardBase = {
 };
 
 type SpaceCard = SpaceCardBase & {
-  coverImages: string[]; // max 3
+  coverImages: string[]; 
   kind: "owned" | "joined";
+  ownerId?: string; 
+  ownerName?: string | null; 
+  ownerEmail?: string | null; 
+};
+
+type OwnerProfileRow = {
+  profiles_id: string;
+  name: string | null;
+  email: string | null;
 };
 
 const Dashboard = () => {
@@ -24,7 +33,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // UI-only search (filtrerar boards på namn)
   const [search, setSearch] = useState("");
 
   const filteredMySpaces = useMemo(() => {
@@ -75,7 +83,7 @@ const Dashboard = () => {
       setLoading(true);
       setErrorMessage(null);
 
-      // Auth
+
       const {
         data: { user },
         error: authError,
@@ -87,7 +95,6 @@ const Dashboard = () => {
         return;
       }
 
-      // Profile -> namn
       const { data: profile } = await supabase
         .from("profiles")
         .select("name")
@@ -96,7 +103,6 @@ const Dashboard = () => {
 
       setUserName(profile?.name ?? "vän");
 
-      // Owned spaces
       const { data: ownedSpaces, error: ownedError } = await supabase
         .from("spaces")
         .select("spaces_id, name, description, created_at")
@@ -115,7 +121,6 @@ const Dashboard = () => {
         kind: "owned",
       }));
 
-      // Joined spaces
       const { data: memberRows, error: memberError } = await supabase
         .from("space_members")
         .select(
@@ -142,16 +147,43 @@ const Dashboard = () => {
           ?.map((row: any) => row.spaces)
           .filter((space: any) => space && space.profiles_id !== user.id) ?? [];
 
-      const joinedBase: SpaceCard[] = joinedRaw.map((s: any) => ({
+      let joinedBase: SpaceCard[] = joinedRaw.map((s: any) => ({
         spaces_id: s.spaces_id,
         name: s.name,
         description: s.description ?? null,
         created_at: s.created_at,
         coverImages: [],
         kind: "joined",
+        ownerId: s.profiles_id,
+        ownerName: null,
+        ownerEmail: null,
       }));
 
-      // Attach covers
+      const ownerIds = Array.from(
+        new Set(joinedBase.map((s) => s.ownerId).filter(Boolean))
+      ) as string[];
+
+      if (ownerIds.length > 0) {
+        const { data: owners, error: ownersError } = await supabase
+          .from("profiles")
+          .select("profiles_id, name, email")
+          .in("profiles_id", ownerIds);
+
+        if (!ownersError && owners) {
+          const ownerMap = new Map<string, OwnerProfileRow>();
+          (owners as OwnerProfileRow[]).forEach((o) => ownerMap.set(o.profiles_id, o));
+
+          joinedBase = joinedBase.map((s) => {
+            const owner = s.ownerId ? ownerMap.get(s.ownerId) : undefined;
+            return {
+              ...s,
+              ownerName: owner?.name ?? null,
+              ownerEmail: owner?.email ?? null,
+            };
+          });
+        }
+      }
+
       const [ownedWithCovers, joinedWithCovers] = await Promise.all([
         attachCovers(ownedBase),
         attachCovers(joinedBase),
@@ -170,30 +202,72 @@ const Dashboard = () => {
   if (errorMessage) return <p className="error-message">{errorMessage}</p>;
 
   return (
-    <div className="p-layout">
-       <h1 className="dashboard-welcome">Välkommen, {userName}</h1>
+  <div className="p-layout">
+    <header className="dash-header">
+      <div>
+        <h1 className="dash-title">Välkommen, {userName}</h1>
+      </div>
 
-      <main className="p-main">
-        {/* Sökfält (Pinterest-stil) */}
-        <div className="p-searchRow">
-          <div className="p-search">
-            <input
-              className="p-searchInput"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Sök bland dina spaces"
-              aria-label="Sök bland dina spaces"
-            />
-          </div>
+      <button
+        className="btn btn-primary"
+        type="button"
+        onClick={() => navigate("/spaces/new")}
+      >
+        + Nytt space
+      </button>
+    </header>
+
+    <main className="p-main">
+      <div className="p-searchRow">
+        <div className="p-search">
+          <input
+            className="p-searchInput"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Sök bland dina spaces"
+            aria-label="Sök bland dina spaces"
+          />
         </div>
+      </div>
 
-        
+      <h2 className="p-title-owned">Mina Spaces</h2>
+      <section className="p-boardGrid" aria-label="Spaces">
+        {filteredMySpaces.map((space) => (
+          <button
+            key={space.spaces_id}
+            className="p-boardCard"
+            type="button"
+            onClick={() => navigate(`/spaces/${space.spaces_id}`)}
+          >
+            <div className="p-cover">
+              <div className="p-coverBig">
+                {space.coverImages[0] ? <img src={space.coverImages[0]} alt="" /> : <div className="placeholder" />}
+              </div>
 
-        {/* Grid */}
-        <h1 className="p-title-owned">Mina Spaces</h1>
-        <section className="p-boardGrid" aria-label="Spaces">
-          {/* Owned */}
-          {filteredMySpaces.map((space) => (
+              <div className="p-coverSmallCol">
+                <div className="p-coverSmall">
+                  {space.coverImages[1] ? <img src={space.coverImages[1]} alt="" /> : <div className="placeholder" />}
+                </div>
+                <div className="p-coverSmall">
+                  {space.coverImages[2] ? <img src={space.coverImages[2]} alt="" /> : <div className="placeholder" />}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-boardName">{space.name}</div>
+          </button>
+        ))}
+      </section>
+
+      <h2 className="p-title">Delade Space</h2>
+      <section className="p-boardGrid" aria-label="Delade spaces">
+        {filteredJoinedSpaces.length === 0 ? (
+          <div className="empty-state">
+            <h3>Inga delade spaces ännu</h3>
+            <p>När du accepterar en inbjudan dyker spacet upp här.</p>
+          </div>
+        ) : (
+          filteredJoinedSpaces.map((space) => (
             <button
               key={space.spaces_id}
               className="p-boardCard"
@@ -202,107 +276,31 @@ const Dashboard = () => {
             >
               <div className="p-cover">
                 <div className="p-coverBig">
-                  {space.coverImages[0] ? (
-                    <img src={space.coverImages[0]} alt="" />
-                  ) : (
-                    <div className="placeholder" />
-                  )}
+                  {space.coverImages[0] ? <img src={space.coverImages[0]} alt="" /> : <div className="placeholder" />}
                 </div>
 
                 <div className="p-coverSmallCol">
                   <div className="p-coverSmall">
-                    {space.coverImages[1] ? (
-                      <img src={space.coverImages[1]} alt="" />
-                    ) : (
-                      <div className="placeholder" />
-                    )}
+                    {space.coverImages[1] ? <img src={space.coverImages[1]} alt="" /> : <div className="placeholder" />}
                   </div>
                   <div className="p-coverSmall">
-                    {space.coverImages[2] ? (
-                      <img src={space.coverImages[2]} alt="" />
-                    ) : (
-                      <div className="placeholder" />
-                    )}
+                    {space.coverImages[2] ? <img src={space.coverImages[2]} alt="" /> : <div className="placeholder" />}
                   </div>
                 </div>
               </div>
 
               <div className="p-boardName">{space.name}</div>
-            </button>
-          ))}
-
-          {/* Create tile */}
-          <button
-            className="p-boardCard p-boardCard--create"
-            type="button"
-            onClick={() => navigate("/spaces/new")}
-          >
-            <div className="p-createTile">
-              <span>+ <br></br> Nytt Space</span>
-            </div>
-          </button>
-        </section>
-
-
-        
-          {/* Joined, ändra detta till Joined senare, nu är det owned */}
-         <h1 className="p-title">Delade Space</h1>
-        <section className="p-boardGrid" aria-label="Spaces">
-  
-          {filteredMySpaces.map((space) => (
-            <button
-              key={space.spaces_id}
-              className="p-boardCard"
-              type="button"
-              onClick={() => navigate(`/spaces/${space.spaces_id}`)}
-            >
-              <div className="p-cover">
-                <div className="p-coverBig">
-                  {space.coverImages[0] ? (
-                    <img src={space.coverImages[0]} alt="" />
-                  ) : (
-                    <div className="placeholder" />
-                  )}
-                </div>
-
-                <div className="p-coverSmallCol">
-                  <div className="p-coverSmall">
-                    {space.coverImages[1] ? (
-                      <img src={space.coverImages[1]} alt="" />
-                    ) : (
-                      <div className="placeholder" />
-                    )}
-                  </div>
-                  <div className="p-coverSmall">
-                    {space.coverImages[2] ? (
-                      <img src={space.coverImages[2]} alt="" />
-                    ) : (
-                      <div className="placeholder" />
-                    )}
-                  </div>
-                </div>
+              <div className="p-boardMeta">
+                Ägare: <strong>{space.ownerName ?? space.ownerEmail ?? "Okänd"}</strong>
               </div>
-
-              <div className="p-boardName">{space.name}</div>
             </button>
-          ))}
-          
-          {/* Create tile */}
-          <button
-            className="p-boardCard p-boardCard--create"
-            type="button"
-            onClick={() => navigate("/spaces/new")}
-          >
-            <div className="p-createTile">
-              <span>Skapa</span>
-            </div>
-            <div className="p-boardName">Ny space</div>
-            <div className="p-boardMeta">Skapa en ny anslagstavla</div>
-          </button>
-        </section>
-      </main>
-    </div>
-  );
+          ))
+        )}
+      </section>
+    </main>
+  </div>
+);
+
 };
 
 export default Dashboard;

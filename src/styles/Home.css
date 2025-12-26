@@ -1,30 +1,25 @@
-/* Wrapper */
 .landing {
   height: 100vh;
   overflow-y: auto;
 
-  /* Scroll-snap (snyggt!) */
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
-/* Varje panel är en hel skärm */
 .panel {
   min-height: 100vh;
   display: grid;
-  place-items: center;         /* centrerar panel-inner i mitten */
+  place-items: center;
   scroll-snap-align: start;
   padding: 60px 20px;
 }
 
-/* Innehåll */
 .panel-inner {
   width: min(980px, 100%);
-  margin-inline: auto;         /* säkerställer centrerat block */
-  text-align: center;          /* 👈 centrerar rubriker, text, knappar */
+  margin-inline: auto;
+  text-align: center;
 }
 
-/* Rubriker */
 .panel h1 {
   font-size: 56px;
   margin: 0 0 12px;
@@ -36,16 +31,14 @@
   margin: 0 0 12px;
 }
 
-/* Text */
 .panel p {
   font-size: 20px;
   max-width: 56ch;
   opacity: 0.9;
 
-  margin: 0 auto;              /* 👈 centrerar textblocket */
+  margin: 0 auto;
 }
 
-/* Färger */
 .panel--white {
   background: #fff;
   color: #111;
@@ -66,19 +59,18 @@
   color: #fff;
 }
 
-/* “Fake” bilder (byt till riktiga img senare) */
 .hero-images {
   display: grid;
   grid-template-columns: repeat(3, minmax(120px, 180px));
   gap: 14px;
-  margin: 24px auto 28px;      /* 👈 centrerar hela griden */
-  justify-content: center;      /* centrerar grid-innehållet */
+  margin: 24px auto 28px;
+  justify-content: center;
 }
 
 .img-card {
   
   border-radius: 18px;
-  overflow: hidden; /* viktigt */
+  overflow: hidden;
  
 }
 
@@ -88,7 +80,6 @@
   display: block;
 }
 
-/* Knapp */
 .cta {
   border: none;
   border-radius: 999px;
@@ -104,11 +95,10 @@
   color: #111;
 }
 
-/* Logo (homepage) */
 .logo-home-wrapper {
   display: flex;
-  justify-content: center;  /* horisontellt */
-  align-items: center;      /* vertikalt */
+  justify-content: center;
+  align-items: center;
   margin-bottom: 18px;
 }
 
@@ -118,15 +108,14 @@
   display: block;
 }
 
-/* Tvåkolumns-layout */
 .panel-split {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* text | bild */
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 40px;
 }
 
-/* Text till vänster */
+
 .panel-text {
   text-align: left;
   min-width: 20vw;
@@ -134,7 +123,6 @@
   
 }
 
-/* Bild till höger */
 .panel-media {
   display: flex;
   justify-content: right;
@@ -146,7 +134,6 @@
 
 }
 
-/* Mobil */
 @media (max-width: 520px) {
   .panel h1 {
     font-size: 44px;

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../../lib/supabaseClient";
 import { type Space } from "../SpacesTypes";
 import "../styles/EditSpace.css"
+import "../../../styles/Buttons.css";
 
 const EditSpace = () => {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ const EditSpace = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // 1) Hämta space och fyll formuläret
   useEffect(() => {
     const fetchSpace = async () => {
       setErrorMessage(null);
@@ -65,7 +65,6 @@ const EditSpace = () => {
     fetchSpace();
   }, [spacesID]);
 
-  // 2) Spara ändringar
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -115,7 +114,6 @@ const EditSpace = () => {
     navigate(`/spaces/${spacesID}`);
   };
 
-  // 3) Radera space
   const handleDeleteSpace = async () => {
     if (!spacesID || !space) return;
 

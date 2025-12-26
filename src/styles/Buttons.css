@@ -1,0 +1,127 @@
+/* =========================
+   BASE BUTTON
+========================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 5px;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.05s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 2px;
+}
+
+/* =========================
+   PRIMARY BUTTON */
+
+.btn-primary {
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: rgba(0, 0, 0, 0.658);
+}
+
+/* =========================
+   SECONDARY BUTTON  (Tillbaka)*/
+
+.btn-secondary {
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.85);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   Ghoist Button */
+
+   .btn-ghost {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.7);
+  padding: 6px 8px;
+}
+
+.btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================
+   DESTRUCTIVE BUTTON (Lämna/Radera)
+========================= */
+.btn-danger {
+  background: rgba(220, 38, 38, 0.08);
+  color: rgb(160, 20, 20);
+}
+.btn-danger:hover {
+  background: rgba(220, 38, 38, 0.14);
+}
+
+.btn-danger:active {
+  transform: translateY(1px);
+}
+
+
+.btn:focus {
+  outline: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid black;
+  outline-offset: 2px;
+}
+
+/* =========================
+   BACK BUTTON (SVG ICON)
+========================= */
+.btn-back {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-backIcon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-back:hover .btn-backIcon {
+  opacity: 1;
+  transform: translateX(-2px);
+}

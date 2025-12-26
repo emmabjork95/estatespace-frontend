@@ -3,6 +3,7 @@ import { useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import "../styles/CreateSpace.css";
+import "../../../styles/Buttons.css";
 
 const CreateSpaces = () => {
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ const CreateSpaces = () => {
     setErrorMessage(null);
     setLoading(true);
 
-    // hämta inloggad användare
     const {
       data: { user },
       error: userError,
@@ -29,7 +29,6 @@ const CreateSpaces = () => {
       return;
     }
 
-    // skapa space
     const { data, error } = await supabase
       .from("spaces")
       .insert({
@@ -47,7 +46,6 @@ const CreateSpaces = () => {
       return;
     }
 
-    // Space skapades → gå till space-vyn
     if (data) {
       navigate(`/spaces/${data.spaces_id}`);
     }
@@ -88,7 +86,7 @@ const CreateSpaces = () => {
             <p className="error-message">{errorMessage}</p>
           )}
 
-          <button className="primary-btn" type="submit" disabled={loading}>
+          <button className="btn btn-primary" type="submit" disabled={loading}>
             {loading ? "Creating..." : "Create space"}
           </button>
         </form>
