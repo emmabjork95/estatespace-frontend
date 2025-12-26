@@ -35,7 +35,6 @@ const ItemDetail = () => {
 
 
   const [isMember, setIsMember] = useState(false);
-  const [role, setRole] = useState<string | null>(null);
 
   const [interestList, setInterestList] = useState<InterestUI[]>([]);
   const [myInterest, setMyInterest] = useState<
@@ -108,13 +107,12 @@ const ItemDetail = () => {
       .eq("profiles_id", user.id)
       .single();
 
-    if (memberError || !memberRow) {
-      setRole(null);
-      setIsMember(false);
-    } else {
-      setRole(memberRow.role ?? null);
-      setIsMember((memberRow.role ?? "").toLowerCase() === "member");
-    }
+if (memberError || !memberRow) {
+  setIsMember(false);
+} else {
+  setIsMember((memberRow.role ?? "").toLowerCase() === "member");
+}
+
 
     const { data: interestRows, error: interestError } = await supabase
       .from("item_interests")
