@@ -36,7 +36,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
-      { path: "auth/invite/:token", element: <AcceptInvite /> },
+      { path: "invite/:token", element: <AcceptInvite /> },
       
     ],
   },
