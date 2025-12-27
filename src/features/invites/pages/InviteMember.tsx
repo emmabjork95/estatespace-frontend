@@ -5,7 +5,7 @@ type Props = {
   spacesID: string;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "");
 console.log("API_BASE:", API_BASE);
 
 export function InviteMember({ spacesID }: Props) {
@@ -45,7 +45,15 @@ export function InviteMember({ spacesID }: Props) {
         body: JSON.stringify({ email: cleanEmail }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+
+let data: any = null;
+try {
+  data = JSON.parse(text);
+} catch {
+  throw new Error(`Ej JSON från API. Status ${res.status}. Body börjar: ${text.slice(0, 80)}`);
+}
+
 
       if (!data.ok) {
         setErrorMessage(data.error ?? "Kunde inte skicka inbjudan.");
