@@ -6,6 +6,7 @@ type Props = {
 };
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
+console.log("API_BASE:", API_BASE);
 
 export function InviteMember({ spacesID }: Props) {
   const [email, setEmail] = useState("");
