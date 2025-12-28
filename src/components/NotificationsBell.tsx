@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
@@ -39,24 +39,40 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<NotificationRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const initRanRef = useRef(false);
 
   const unreadCount = useMemo(
     () => rows.filter((r) => !r.is_read).length,
     [rows]
   );
 
+  // ✅ Alltid hämta aktuell user.id och använd den
   const fetchNotifications = async () => {
     setLoading(true);
 
     const {
       data: { user },
+      error: userErr,
     } = await supabase.auth.getUser();
 
-    if (!user) {
+    if (userErr) {
+      console.log("getUser error:", userErr);
       setRows([]);
       setLoading(false);
       return;
     }
+
+    if (!user) {
+      setUserId(null);
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+
+    setUserId(user.id);
 
     const { data, error } = await supabase
       .from("notifications")
@@ -67,8 +83,15 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       .order("created_at", { ascending: false })
       .limit(20);
 
+    console.log("NOTIF fetch error:", error);
+    console.log("NOTIF fetch data:", data);
+
     setLoading(false);
-    if (error) return;
+
+    if (error) {
+      // om RLS eller annat – visa inget men behåll stabilt läge
+      return;
+    }
 
     setRows((data ?? []) as NotificationRow[]);
   };
@@ -87,11 +110,14 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
   };
 
   const markAllAsRead = async () => {
+    if (!userId) return;
+
     setRows((prev) => prev.map((r) => ({ ...r, is_read: true })));
 
     const { error } = await supabase
       .from("notifications")
       .update({ is_read: true })
+      .eq("recipient_profiles_id", userId)
       .eq("is_read", false);
 
     if (error) fetchNotifications();
@@ -105,6 +131,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       setOpen(false);
       return;
     }
+
     if (n.spaces_id) {
       navigate(`/spaces/${n.spaces_id}`);
       setOpen(false);
@@ -112,7 +139,8 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
   };
 
   useEffect(() => {
-    let channel: ReturnType<typeof supabase.channel> | null = null;
+    if (initRanRef.current) return;
+    initRanRef.current = true;
 
     const init = async () => {
       await fetchNotifications();
@@ -120,10 +148,17 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+
       if (!user) return;
 
-      channel = supabase
-        .channel("notifications-live")
+      // städa gammal kanal
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
+
+      channelRef.current = supabase
+        .channel(`notifications-live-${user.id}`)
         .on(
           "postgres_changes",
           {
@@ -132,7 +167,9 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
             table: "notifications",
             filter: `recipient_profiles_id=eq.${user.id}`,
           },
-          () => fetchNotifications()
+          () => {
+            fetchNotifications();
+          }
         )
         .subscribe();
     };
@@ -140,7 +177,10 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
     init();
 
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, []);
 
@@ -155,7 +195,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
 
   const toggle = () => {
     setOpen((v) => !v);
-    fetchNotifications();
+    fetchNotifications(); // ✅ hämtar alltid senaste för rätt user
   };
 
   return (
