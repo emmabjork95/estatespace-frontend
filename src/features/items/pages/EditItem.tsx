@@ -45,9 +45,6 @@ const EditItem = () => {
   removeSelectedFile();
 };
 
-  const undoRemoveExistingImage = () => {
-    setRemoveImage(false);
-  };
 
   const extractStoragePathFromPublicUrl = (publicUrl: string) => {
     const marker = "/storage/v1/object/public/item-images/";
