@@ -19,3 +19,11 @@ export type ItemListItem = {
   image_url: string | null;
   created_at: string;
 };
+
+export const STATUS_LABELS: Record<Status, string> = {
+  Unsorted: "Osorterat",
+  Keep: "Spara",
+  Donate: "Donera",
+  Sell: "Sälja",
+  Discard: "Slänga",
+};

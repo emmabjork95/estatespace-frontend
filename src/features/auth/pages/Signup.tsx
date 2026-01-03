@@ -1,18 +1,17 @@
-import {  useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate, Link } from "react-router-dom";
 import { useRedirect } from "../hooks/useRedirect";
-
+import "../styles/Signup.css";
 
 export function Signup() {
   const navigate = useNavigate();
-
-const redirect = useRedirect("/dashboard");
-
+  const redirect = useRedirect("/dashboard");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -25,9 +24,7 @@ const redirect = useRedirect("/dashboard");
       email,
       password,
       options: {
-        data: {
-          name,
-        },
+        data: { name },
       },
     });
 
@@ -46,8 +43,8 @@ const redirect = useRedirect("/dashboard");
 
     const { error: profileError } = await supabase.from("profiles").insert({
       profiles_id: user.id,
-      name: name,
-      email: email,
+      name,
+      email,
     });
 
     setLoading(false);
@@ -58,59 +55,64 @@ const redirect = useRedirect("/dashboard");
     }
 
     navigate(`/auth/login?redirect=${encodeURIComponent(redirect)}`);
-
   };
 
   return (
-    <div style={{ maxWidth: 520 }}>
-      <h2>Skapa konto</h2>
+    <div className="signup-page">
+      <div className="signup-card">
+        <h1 className="signup-title">Skapa konto</h1>
 
-      <form onSubmit={handleSignup}>
-        <label>
-          Namn
-          <input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
+        <form onSubmit={handleSignup} className="signup-form">
+          <div className="field">
+            <label htmlFor="name">Namn</label>
+            <input
+              id="name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
+            />
+          </div>
 
-        <label>
-          E-post
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-          />
-        </label>
+          <div className="field">
+            <label htmlFor="email">E-post</label>
+            <input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+          </div>
 
-        <label>
-          Lösenord
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-          />
-        </label>
+          <div className="field">
+            <label htmlFor="password">Lösenord</label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
 
-        {errorMessage && <p style={{ color: "crimson" }}>{errorMessage}</p>}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Skapar..." : "Skapa konto"}
-        </button>
-      </form>
+          <button className="btn btn-primary loginPrimaryBtn" type="submit" disabled={loading}>
+            {loading ? "Skapar..." : "Skapa konto"}
+          </button>
+        </form>
 
-      <p style={{ marginTop: 12 }}>
-        Har du redan konto?{" "}
-        <Link to={`/auth/login?redirect=${encodeURIComponent(redirect)}`}>
-          Logga in
-        </Link>
-      </p>
+        <p className="signup-footer">
+          Har du redan konto?{" "}
+          <Link to={`/auth/login?redirect=${encodeURIComponent(redirect)}`}>
+            Logga in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

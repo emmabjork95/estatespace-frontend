@@ -1,11 +1,11 @@
-.createSpacePage {
+.createItemPage {
   min-height: calc(100vh - 120px);
   display: flex;
   justify-content: center;
   padding: 32px 16px;
 }
 
-.createSpaceCard {
+.createItemCard {
   width: 100%;
   max-width: 520px;
 
@@ -17,20 +17,21 @@
   padding: 22px;
 }
 
-.createSpaceHeader h2 {
+.createItemHeader h2 {
   margin: 0 0 6px;
   font-size: 22px;
   letter-spacing: -0.2px;
 }
 
-.createSpaceSub {
+.createItemSub {
   margin: 0;
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
   line-height: 1.4;
 }
 
-.createSpaceAlert {
+
+.createItemAlert {
   margin-top: 16px;
   padding: 12px;
   border-radius: 12px;
@@ -43,11 +44,11 @@
   gap: 10px;
 }
 
-.createSpaceAlertText {
+.createItemAlertText {
   line-height: 1.35;
 }
 
-.createSpaceAlertClose {
+.createItemAlertClose {
   border: none;
   background: transparent;
   cursor: pointer;
@@ -57,34 +58,35 @@
   border-radius: 8px;
 }
 
-.createSpaceAlertClose:hover {
+.createItemAlertClose:hover {
   background: rgba(0, 0, 0, 0.06);
 }
 
-.createSpaceAlert--error {
+.createItemAlert--error {
   background: rgba(220, 20, 60, 0.08);
   border-color: rgba(220, 20, 60, 0.25);
   color: #8b0a21;
 }
 
-.createSpaceForm {
+
+.createItemForm {
   margin-top: 18px;
   display: grid;
   gap: 12px;
 }
 
-.createSpaceField {
+.createItemField {
   display: grid;
   gap: 6px;
   font-size: 13px;
 }
 
-.createSpaceField span {
+.createItemField span {
   color: rgba(0, 0, 0, 0.75);
   font-weight: 600;
 }
 
-.createSpaceInput {
+.createItemInput {
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
@@ -95,17 +97,73 @@
   background: #fff;
 }
 
-.createSpaceTextarea {
-  resize: vertical;
-  min-height: 110px;
-}
-
-.createSpaceInput:focus {
+.createItemInput:focus {
   border-color: rgba(0, 0, 0, 0.35);
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
 }
 
-.createSpaceActions {
+
+.createItemSelect {
+  appearance: none;
+  background-image: linear-gradient(
+      45deg,
+      transparent 50%,
+      rgba(0, 0, 0, 0.6) 50%
+    ),
+    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+
+.createItemFile {
+  width: 100%;
+  font-size: 14px;
+  font-family: inherit;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+}
+
+.createItemFile:hover {
+  background: rgba(0, 0, 0, 0.035);
+}
+
+
+.createItemFileRow {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.createItemFileName {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: 600;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.createItemRemoveFileBtn {
+  padding: 6px 10px;
+}
+
+.createItemActions {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -114,7 +172,7 @@
 }
 
 @media (max-width: 480px) {
-  .createSpaceCard {
+  .createItemCard {
     padding: 18px;
   }
 }

@@ -1,5 +1,5 @@
-.login-page {
-   min-height: calc(100vh - 110px);
+.signup-page {
+  min-height: 100vh;
   width: 100%;
   display: grid;
   place-items: center;
@@ -11,9 +11,16 @@
   background-repeat: no-repeat;
 }
 
+.signup-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
 
-
-.login-card {
+.signup-card {
   position: relative;
   width: min(420px, 92vw);
 
@@ -27,21 +34,19 @@
   text-align: center;
 }
 
-.login-title {
+.signup-title {
   margin: 0 0 6px;
   font-size: 22px;
-  font-weight: 700; 
+  font-weight: 700;
   letter-spacing: -0.1px;
   color: rgba(0, 0, 0, 0.88);
 }
 
-
-.login-form {
+.signup-form {
   margin-top: 14px;
   display: grid;
   gap: 12px;
   text-align: left;
-
   padding: 0;
 }
 
@@ -62,7 +67,7 @@
   width: 100%;
   height: 44px;
   padding: 0 12px;
-  border-radius: 12px; 
+  border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.14);
   outline: none;
   font-size: 14px;
@@ -70,34 +75,10 @@
   background: #fff;
 }
 
-.field input::placeholder {
-  color: rgba(0, 0, 0, 0.45);
-}
-
 .field input:focus {
   border-color: rgba(0, 0, 0, 0.35);
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
 }
-
-.login-row {
-  margin-top: 2px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.login-link {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.7);
-  text-decoration: none;
-  padding: 6px 8px;
-  border-radius: 10px;
-}
-
-.login-link:hover {
-  background: rgba(0, 0, 0, 0.06);
-  text-decoration: none;
-}
-
 
 .error-message {
   margin: 4px 0 0;
@@ -110,14 +91,6 @@
   line-height: 1.35;
 }
 
-.loginPrimaryBtn {
-  width: 100%;
-  justify-content: center;
-  height: 44px;
-  border-radius: 12px;
-  margin-top: 4px;
-}
-
 .primary-btn {
   width: 100%;
   height: 44px;
@@ -128,6 +101,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.05s ease;
+  margin-top: 4px;
 }
 
 .primary-btn:hover {
@@ -143,28 +117,23 @@
   cursor: not-allowed;
 }
 
-.login-footer {
+.signup-footer {
   margin: 14px 0 0;
   font-size: 13px;
   text-align: center;
   color: rgba(0, 0, 0, 0.65);
 }
 
-.login-footer a {
-  color: rgba(0, 0, 0, 0.70);
-  font-weight: 800;
-  text-decoration: none;
-  padding: 6px 8px;
-  border-radius: 10px;
+.signup-footer a {
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 0;
 }
-
-.login-footer a:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
 
 @media (max-width: 420px) {
-  .login-card {
+  .signup-card {
     padding: 22px 18px;
   }
 }

@@ -1,7 +1,11 @@
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
-import { STATUS_OPTIONS, type Item, type Status } from "../ItemsTypes";
+import { STATUS_OPTIONS, STATUS_LABELS, type Item, type Status } from "../ItemsTypes";
+import "../styles/EditItem.css";
+import "../../../styles/Buttons.css";
+
+
 
 const EditItem = () => {
   const navigate = useNavigate();
@@ -14,8 +18,49 @@ const EditItem = () => {
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState<Status>("Unsorted");
 
+
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [removeImage, setRemoveImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const removeSelectedFile = () => {
+    setFile(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const markRemoveExistingImage = () => {
+    const confirmed = window.confirm(
+    "Är du säker på att du vill ta bort bilden?"
+  );
+
+  if (!confirmed) return;
+
+  setRemoveImage(true);
+  removeSelectedFile();
+};
+
+  const undoRemoveExistingImage = () => {
+    setRemoveImage(false);
+  };
+
+  const extractStoragePathFromPublicUrl = (publicUrl: string) => {
+    const marker = "/storage/v1/object/public/item-images/";
+    try {
+      const url = new URL(publicUrl);
+      const idx = url.pathname.indexOf(marker);
+      if (idx === -1) return null;
+      const path = url.pathname.slice(idx + marker.length);
+      return path || null;
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -24,7 +69,7 @@ const EditItem = () => {
 
       if (!itemsID) {
         setLoading(false);
-        setErrorMessage("Missing item id.");
+        setErrorMessage("Saknar item-id i URL:en.");
         return;
       }
 
@@ -35,7 +80,7 @@ const EditItem = () => {
 
       if (userError || !user) {
         setLoading(false);
-        setErrorMessage("You must be logged in.");
+        setErrorMessage("Du måste vara inloggad.");
         return;
       }
 
@@ -55,7 +100,7 @@ const EditItem = () => {
       }
 
       if (data.profiles_id !== user.id) {
-        setErrorMessage("You are not allowed to edit this item.");
+        setErrorMessage("Du har inte behörighet att redigera detta item.");
         return;
       }
 
@@ -67,12 +112,27 @@ const EditItem = () => {
       const validStatus = STATUS_OPTIONS.includes(data.status as Status)
         ? (data.status as Status)
         : "Unsorted";
-
       setStatus(validStatus);
+
+      setRemoveImage(false);
+      removeSelectedFile();
     };
 
     fetchItem();
+
   }, [itemsID]);
+
+
+  useEffect(() => {
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [file]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -81,7 +141,7 @@ const EditItem = () => {
 
     if (!itemsID) {
       setLoading(false);
-      setErrorMessage("Missing item id.");
+      setErrorMessage("Saknar item-id i URL:en.");
       return;
     }
 
@@ -92,9 +152,76 @@ const EditItem = () => {
 
     if (userError || !user) {
       setLoading(false);
-      setErrorMessage("You must be logged in.");
+      setErrorMessage("Du måste vara inloggad.");
       return;
     }
+
+    const { data: currentItem, error: currentError } = await supabase
+      .from("items")
+      .select("items_id, spaces_id, profiles_id, image_url")
+      .eq("items_id", itemsID)
+      .single();
+
+    if (currentError || !currentItem) {
+      setLoading(false);
+      setErrorMessage(currentError?.message ?? "Kunde inte hämta item.");
+      return;
+    }
+
+    if (currentItem.profiles_id !== user.id) {
+      setLoading(false);
+      setErrorMessage("Du har inte behörighet att redigera detta item.");
+      return;
+    }
+
+    const oldImageUrl = (currentItem.image_url as string | null) ?? null;
+
+
+    let imageUrl: string | null = removeImage ? null : oldImageUrl;
+
+
+    if (removeImage && oldImageUrl) {
+      const oldPath = extractStoragePathFromPublicUrl(oldImageUrl);
+      if (oldPath) {
+    
+        await supabase.storage.from("item-images").remove([oldPath]);
+      }
+    }
+
+
+    if (file) {
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const filePath = `${currentItem.spaces_id}/${crypto.randomUUID()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("item-images")
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type || "image/jpeg",
+          cacheControl: "3600",
+        });
+
+      if (uploadError) {
+        setLoading(false);
+        setErrorMessage(uploadError.message);
+        return;
+      }
+
+      const { data: publicData } = supabase.storage
+        .from("item-images")
+        .getPublicUrl(filePath);
+
+      imageUrl = publicData.publicUrl;
+
+
+      if (oldImageUrl) {
+        const oldPath = extractStoragePathFromPublicUrl(oldImageUrl);
+        if (oldPath) {
+          await supabase.storage.from("item-images").remove([oldPath]);
+        }
+      }
+    }
+
 
     const { error } = await supabase
       .from("items")
@@ -103,6 +230,7 @@ const EditItem = () => {
         description: description.trim() || null,
         category: category.trim() || null,
         status,
+        image_url: imageUrl,
       })
       .eq("items_id", itemsID)
       .eq("profiles_id", user.id);
@@ -114,14 +242,16 @@ const EditItem = () => {
       return;
     }
 
+    setRemoveImage(false);
+    removeSelectedFile();
+
     navigate(`/items/${itemsID}`);
   };
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this item? This action cannot be undone."
+      "Är du säker på att du vill radera detta item? Detta går inte att ångra."
     );
-
     if (!confirmDelete) return;
 
     setErrorMessage(null);
@@ -129,7 +259,7 @@ const EditItem = () => {
 
     if (!itemsID) {
       setLoading(false);
-      setErrorMessage("Missing item id.");
+      setErrorMessage("Saknar item-id i URL:en.");
       return;
     }
 
@@ -140,7 +270,7 @@ const EditItem = () => {
 
     if (userError || !user) {
       setLoading(false);
-      setErrorMessage("You must be logged in.");
+      setErrorMessage("Du måste vara inloggad.");
       return;
     }
 
@@ -161,87 +291,175 @@ const EditItem = () => {
   };
 
   return (
-    <div className="edit-item-page">
-      <div className="edit-item-card">
-        <h1 className="edit-item-title">Edit item</h1>
+    <div className="editItemPage">
+      <div className="editItemCard">
+        <div className="editItemTopRow">
+          <button className="btn btn-ghost" type="button" onClick={() => navigate(-1)}>
+            Tillbaka
+          </button>
+        </div>
 
-        {loading && <p>Loading...</p>}
-        {!loading && errorMessage && (
-          <p className="error-message">{errorMessage}</p>
-        )}
+        <div className="editItemHeader">
+          <h2>Redigera föremål</h2>
+         
+        </div>
 
-        {!loading && !errorMessage && item && (
-          <form onSubmit={handleSubmit} className="edit-item-form">
-            <div className="field">
-              <label htmlFor="name">Item name</label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="category">Category</label>
-              <input
-                id="category"
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="status">Status</label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value as Status)}
-              >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="field">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={4}
-                placeholder="Optional"
-              />
-            </div>
-
-            <div className="edit-item-actions">
-              <button
+          <button
                 type="button"
                 className="btn btn-danger"
                 onClick={handleDelete}
                 disabled={loading}
               >
-                Delete item
+                Ta bort föremål
+              </button>
+
+        {loading && <p className="editItemLoading">Laddar…</p>}
+
+        {!loading && errorMessage && (
+          <div className="editItemAlert editItemAlert--error">
+            <span className="editItemAlertText">{errorMessage}</span>
+            <button
+              className="editItemAlertClose"
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              aria-label="Stäng meddelande"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {!loading && !errorMessage && item && (
+          <form onSubmit={handleSubmit} className="editItemForm">
+            <label className="editItemField">
+              <span>Namn</span>
+              <input
+                className="editItemInput"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </label>
+
+            <label className="editItemField">
+              <span>Kategori</span>
+              <input
+                className="editItemInput"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Valfritt"
+                disabled={loading}
+              />
+            </label>
+
+            <label className="editItemField">
+              <span>Status</span>
+              <select
+                className="editItemInput editItemSelect"
+                value={status}
+                onChange={(e) => setStatus(e.target.value as Status)}
+                disabled={loading}
+              >
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s} value={s}>
+                    {STATUS_LABELS[s]}
+                  </option>
+                ))}
+              </select>
+
+    
+            </label>
+
+            <label className="editItemField">
+              <span>Beskrivning</span>
+              <textarea
+                className="editItemInput editItemTextarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                placeholder="Valfritt"
+                disabled={loading}
+              />
+            </label>
+
+
+            <div className="editItemField">
+              <span>Bild</span>
+
+              <div className="editItemImageBlock">
+                <div className="editItemImagePreview">
+
+                  {previewUrl ? (
+                    <div className="editItemImageWrap">
+                      <img src={previewUrl} alt="Ny vald bild" />
+                      <div className="editItemImageOverlay" />
+                      <button
+                        type="button"
+                        className="editItemImageRemoveBtn"
+                        onClick={removeSelectedFile}
+                        aria-label="Ta bort vald bild"
+                        disabled={loading}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : removeImage ? (
+                    <div className="editItemImagePlaceholder" aria-label="Ingen bild" />
+                  ) : item.image_url ? (
+                    <div className="editItemImageWrap">
+                      <img src={item.image_url} alt={item.name} />
+                      <div className="editItemImageOverlay" />
+                      <button
+                        type="button"
+                        className="editItemImageRemoveBtn"
+                        onClick={markRemoveExistingImage}
+                        aria-label="Ta bort bild"
+                        disabled={loading}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="editItemImagePlaceholder" aria-label="Ingen bild" />
+                  )}
+                </div>
+
+                <div className="editItemImageActions">
+                  <input
+                    className="editItemFile"
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={(e) => {
+                      setFile(e.target.files?.[0] ?? null);
+                      setRemoveImage(false);
+                    }}
+                    disabled={loading}
+                  />
+
+                 
+
+                  
+                </div>
+              </div>
+            </div>
+
+            <div className="editItemActions">
+             <button className="btn btn-primary" type="submit" disabled={loading}>
+                {loading ? "Sparar..." : "Spara ändringar"}
               </button>
 
               <button
                 type="button"
-                className="secondary-btn"
+                className="btn btn-secondary"
                 onClick={() => navigate(`/items/${itemsID}`)}
                 disabled={loading}
               >
-                Cancel
+                Avbryt
               </button>
 
-              <button className="primary-btn" type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save changes"}
-              </button>
+             
             </div>
           </form>
         )}

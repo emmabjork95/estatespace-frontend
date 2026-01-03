@@ -1,9 +1,9 @@
-import { type FormEvent } from "react";
-import { useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
-import { STATUS_OPTIONS, type Status } from "../ItemsTypes";
-
+import { STATUS_OPTIONS, STATUS_LABELS, type Status } from "../ItemsTypes";
+import "../styles/CreateItem.css";
+import "../../../styles/Buttons.css";
 
 const CreateItem = () => {
   const navigate = useNavigate();
@@ -16,6 +16,15 @@ const CreateItem = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const removeSelectedFile = () => {
+    setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -47,8 +56,11 @@ const CreateItem = () => {
 
       const { error: uploadError } = await supabase.storage
         .from("item-images")
-        .upload(filePath, file, { upsert: false,   contentType: file.type || "image/jpeg",
-    cacheControl: "3600", });
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type || "image/jpeg",
+          cacheControl: "3600",
+        });
 
       if (uploadError) {
         setLoading(false);
@@ -89,66 +101,114 @@ const CreateItem = () => {
   };
 
   return (
-    <div
-      className="create-item-page"
-    >
-      <div className="create-item-card">
-        <h1 className="create-item-title">Create new item</h1>
+    <div className="createItemPage">
+      <div className="createItemCard">
+        <div className="createItemHeader">
+          <h2>Skapa föremål</h2>
+        
+        </div>
 
-        <form onSubmit={handleSubmit} className="create-item-form">
-          <div className="field">
-            <label htmlFor="name">Item name</label>
+        {errorMessage && (
+          <div className="createItemAlert createItemAlert--error">
+            <span className="createItemAlertText">{errorMessage}</span>
+            <button
+              className="createItemAlertClose"
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              aria-label="Stäng meddelande"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="createItemForm">
+          <label className="createItemField">
+            <span>Namn på föremål</span>
             <input
+              className="createItemInput"
               id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="e.g. Coffee table"
+              placeholder="t.ex. sängbord"
+              disabled={loading}
             />
-          </div>
+          </label>
 
-          <div className="field">
-            <label htmlFor="category">Category</label>
+          <label className="createItemField">
+            <span>Kategori</span>
             <input
+              className="createItemInput"
               id="category"
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g. Furniture"
+              placeholder="t.ex. Möbler"
+              disabled={loading}
             />
-          </div>
+          </label>
 
-          <div className="field">
-            <label htmlFor="status">Status</label>
+          <label className="createItemField">
+            <span>Status</span>
             <select
+              className="createItemInput createItemSelect"
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value as Status)}
+              disabled={loading}
             >
               {STATUS_OPTIONS.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {STATUS_LABELS[s]}
                 </option>
               ))}
             </select>
-          </div>
+          </label>
 
-          <div className="field">
-            <label htmlFor="image">Image</label>
+          <label className="createItemField">
+            <span>Bild</span>
             <input
+              className="createItemFile"
               id="image"
               type="file"
               accept="image/*"
+              ref={fileInputRef}
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              disabled={loading}
             />
+
+            {file && (
+              <div className="createItemFileRow">
+                <span className="createItemFileName">{file.name}</span>
+                <button
+                  type="button"
+                  className="btn btn-ghost createItemRemoveFileBtn"
+                  onClick={removeSelectedFile}
+                  aria-label="Ta bort vald bild"
+                  disabled={loading}
+                >
+                  Ta bort
+                </button>
+              </div>
+            )}
+          </label>
+
+          <div className="createItemActions">
+            <button className="btn btn-primary" type="submit" disabled={loading}>
+              {loading ? "Skapar..." : "Skapa"}
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              type="button"
+              onClick={() => navigate(-1)}
+              disabled={loading}
+            >
+              Avbryt
+            </button>
           </div>
-
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-          <button className="primary-btn" type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create item"}
-          </button>
         </form>
       </div>
     </div>

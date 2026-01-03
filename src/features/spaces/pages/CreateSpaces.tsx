@@ -51,48 +51,73 @@ const CreateSpaces = () => {
     }
   };
 
-  return (
-    <div
-      className="create-space-page"
-    >
-      <div className="create-space-card">
-        <h1 className="create-space-title">Create new space</h1>
+ return (
+  <div className="createSpacePage">
+    <div className="createSpaceCard">
+      <div className="createSpaceHeader">
+        <h2>Skapa nytt space</h2>
 
-        <form onSubmit={handleSubmit} className="create-space-form">
-          <div className="field">
-            <label htmlFor="name">Space name</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              placeholder="e.g. Grandma’s apartment"
-            />
-          </div>
-
-          <div className="field">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optional description"
-              rows={4}
-            />
-          </div>
-
-          {errorMessage && (
-            <p className="error-message">{errorMessage}</p>
-          )}
-
-          <button className="btn btn-primary" type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create space"}
-          </button>
-        </form>
       </div>
+
+      {errorMessage && (
+        <div className="createSpaceAlert createSpaceAlert--error">
+          <span className="createSpaceAlertText">{errorMessage}</span>
+          <button
+            className="createSpaceAlertClose"
+            type="button"
+            onClick={() => setErrorMessage(null)}
+            aria-label="Stäng meddelande"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="createSpaceForm">
+        <label className="createSpaceField">
+          <span>Space namn</span>
+          <input
+            className="createSpaceInput"
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            placeholder="t.ex. Mammas vind"
+          />
+        </label>
+
+        <label className="createSpaceField">
+          <span>Beskrivning</span>
+          <textarea
+            className="createSpaceInput createSpaceTextarea"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Valfritt"
+            rows={4}
+          />
+        </label>
+
+        <div className="createSpaceActions">
+          <button className="btn btn-primary" type="submit" disabled={loading}>
+            {loading ? "Skapar..." : "Skapa space"}
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            type="button"
+            onClick={() => navigate(-1)}
+            disabled={loading}
+          >
+            Avbryt
+          </button>
+        </div>
+      </form>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default CreateSpaces;

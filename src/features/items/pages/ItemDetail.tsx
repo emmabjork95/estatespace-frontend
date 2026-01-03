@@ -3,7 +3,9 @@ import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/ItemDetail.css";
 import "../../../styles/Buttons.css";
-import { type Item } from "../ItemsTypes";
+import { STATUS_LABELS, type Item, type Status } from "../ItemsTypes";
+
+
 
 type InterestRow = {
   profiles_id: string;
@@ -215,7 +217,7 @@ if (memberError || !memberRow) {
   return (
     <div className="itemPage">
       <div className="itemCard">
-        {/* Top row */}
+    
         <div className="itemTopRow">
           <button
             className="btn btn-ghost"
@@ -254,7 +256,8 @@ if (memberError || !memberRow) {
 
               <div className="itemPills">
                 <span className="itemPill">
-                  Status: <strong>{item.status}</strong>
+                 Status: <strong>{STATUS_LABELS[item.status as Status] ?? item.status}</strong>
+
                 </span>
 
                 {item.category && (
@@ -265,13 +268,15 @@ if (memberError || !memberRow) {
               </div>
             </div>
 
-           <div className="itemMediaSingle">
-              {selectedImage ? (
-                <img className="itemHeroImage" src={selectedImage} alt={item.name} />
-              ) : (
-                <div className="itemImagePlaceholder" aria-label="Ingen bild" />
-              )}
-            </div>
+<div className="itemMediaSingle">
+  <div className="itemMediaInner">
+    {selectedImage ? (
+      <img className="itemHeroImage" src={selectedImage} alt={item.name} />
+    ) : (
+      <div className="itemImagePlaceholder" aria-label="Ingen bild" />
+    )}
+  </div>
+</div>
 
             {isMember && (
               <div className="itemInterestRow">
@@ -303,7 +308,7 @@ if (memberError || !memberRow) {
               </div>
             )}
 
-            {/* Description */}
+        
             {item.description && (
               <div className="itemSection">
                 <h3 className="itemSectionTitle">Beskrivning</h3>
@@ -311,7 +316,7 @@ if (memberError || !memberRow) {
               </div>
             )}
 
-            {/* Markeringar */}
+
             <div className="itemSection">
               <h3 className="itemSectionTitle">Markeringar</h3>
 

@@ -49,7 +49,6 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
     [rows]
   );
 
-  // ✅ Alltid hämta aktuell user.id och använd den
   const fetchNotifications = async () => {
     setLoading(true);
 
@@ -89,7 +88,6 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
     setLoading(false);
 
     if (error) {
-      // om RLS eller annat – visa inget men behåll stabilt läge
       return;
     }
 
@@ -151,7 +149,6 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
 
       if (!user) return;
 
-      // städa gammal kanal
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
@@ -195,7 +192,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
 
   const toggle = () => {
     setOpen((v) => !v);
-    fetchNotifications(); // ✅ hämtar alltid senaste för rätt user
+    fetchNotifications();
   };
 
   return (

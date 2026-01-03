@@ -17,6 +17,8 @@ import EditSpace from "./features/spaces/pages/EditSpace";
 import { Profile } from "./features/auth/pages/Profile";
 import { AcceptInvite } from "./features/invites/pages/AcceptInvites";
 import SpaceMembers from "./features/invites/pages/SpaceMembers";
+import ForgotPassword from "./features/auth/pages/ForgotPassword";
+import ResetPassword from "./features/auth/pages/ResetPassword";
 
 export const router = createBrowserRouter([
     {
@@ -37,6 +39,8 @@ export const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
       { path: "invite/:token", element: <AcceptInvite /> },
+      { path: "reset-password", element: <ResetPassword /> },
+      { path: "forgot-password", element: <ForgotPassword /> },
       
     ],
   },
