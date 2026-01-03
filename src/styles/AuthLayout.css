@@ -1,0 +1,28 @@
+.authLayout {
+  min-height: 100vh;
+
+  background-image: url(../../../assets/background-plain.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.authLayout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.authMain {
+  padding-top: 110px;
+  position: relative;
+  z-index: 1;
+
+
+  background: transparent;
+}

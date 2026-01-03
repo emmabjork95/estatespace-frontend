@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../../lib/supabaseClient";
 import { InviteMember } from "../../invites/pages/InviteMember";
-
+import "../styles/SpaceMembers.css";
+import "../../../styles/Buttons.css";
 
 type SpaceRow = {
   spaces_id: string;
@@ -36,6 +37,17 @@ const SpaceMembers = () => {
   const [members, setMembers] = useState<MemberUI[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const ownerId = space?.profiles_id ?? null;
+
+  const owners = useMemo(
+    () => members.filter((m) => m.profiles_id === ownerId),
+    [members, ownerId]
+  );
+  const nonOwners = useMemo(
+    () => members.filter((m) => m.profiles_id !== ownerId),
+    [members, ownerId]
+  );
 
   const fetchAll = async () => {
     setLoading(true);
@@ -90,7 +102,6 @@ const SpaceMembers = () => {
     }
 
     const membersRaw = (memberRows ?? []) as MemberRow[];
-
     const ids = membersRaw.map((m) => m.profiles_id);
 
     if (ids.length === 0) {
@@ -128,6 +139,7 @@ const SpaceMembers = () => {
 
   useEffect(() => {
     fetchAll();
+
   }, [spacesID]);
 
   const handleRemove = async (memberProfileId: string) => {
@@ -161,61 +173,152 @@ const SpaceMembers = () => {
   };
 
   return (
-    <div style={{ maxWidth: 700 }}>
-      <button type="button" onClick={() => navigate(`/spaces/${spacesID}`)}>
-        ← Tillbaka till space
-      </button>
+    <div className="spaceMembersPage">
+      <div className="spaceMembersCard">
+        <div className="spaceMembersTopRow">
+          <button
+            className="btn btn-ghost"
+            type="button"
+            onClick={() => navigate(`/spaces/${spacesID}`)}
+          >
+            Tillbaka
+          </button>
+        </div>
 
-      <h1>Medlemmar</h1>
+        <div className="spaceMembersHeader">
+          <h2>Medlemmar</h2>
+          <p className="spaceMembersSub">
+            Hantera medlemmar och bjud in nya till ditt space.
+          </p>
+        </div>
 
-      
+        {space && (
+          <div className="spaceMembersInfoRow">
+            <span className="spaceMembersInfoLabel">Space</span>
+            <span className="spaceMembersInfoValue">{space.name}</span>
+          </div>
+        )}
 
-      {space && <p><strong>Space:</strong> {space.name}</p>}
-{space && (
-  <>
-    <h2>Bjud in medlem</h2>
-    <InviteMember spacesID={space.spaces_id} />
-  </>
-)}
+        {(errorMessage || loading) && (
+          <div
+            className={`spaceMembersAlert ${
+              errorMessage ? "spaceMembersAlert--error" : "spaceMembersAlert--info"
+            }`}
+          >
+            <span className="spaceMembersAlertText">
+              {errorMessage ?? "Laddar…"}
+            </span>
+            {errorMessage && (
+              <button
+                className="spaceMembersAlertClose"
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                aria-label="Stäng meddelande"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        )}
 
-<h2>Medlemmar:</h2>
+        {space && (
+          <>
+            <div className="spaceMembersDivider" />
 
+            <div className="spaceMembersSection">
+              <div className="spaceMembersSectionHeader">
+                <h3>Bjud in medlem</h3>
+                <p>Skicka en inbjudan via e-post.</p>
+              </div>
 
-      {loading && <p>Laddar...</p>}
-      {!loading && errorMessage && <p className="error-message">{errorMessage}</p>}
+              <div className="spaceMembersInviteWrap">
+                <InviteMember spacesID={space.spaces_id} />
+              </div>
+            </div>
+          </>
+        )}
 
-      {!loading && !errorMessage && (
-        <>
-          {members.length === 0 ? (
-            <p>Inga medlemmar hittades.</p>
-          ) : (
-            <ul style={{ paddingLeft: 16 }}>
-              {members.map((m) => (
-                <li key={m.profiles_id} style={{ marginBottom: 10 }}>
-                  <div>
-                    <strong>{m.name ?? "Okänt namn"}</strong>{" "}
-                    {m.email ? `(${m.email})` : ""}
-                    {m.role ? ` – ${m.role}` : ""}
-                  </div>
+        <div className="spaceMembersDivider" />
 
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(m.profiles_id)}
-                    disabled={loading || m.profiles_id === space?.profiles_id}
-                    className="btn btn-danger"
-                  >
-                    Ta bort
-                  </button>
+        <div className="spaceMembersSection">
+          <div className="spaceMembersSectionHeader">
+            <h3>Medlemmar</h3>
+            <p>
+              {members.length} st{" "}
+              {members.length === 1 ? "medlem" : "medlemmar"} i detta space.
+            </p>
+          </div>
 
-                  {m.profiles_id === space?.profiles_id && (
-                    <span style={{ marginLeft: 8 }}>(Owner)</span>
-                  )}
-                </li>
-              ))}
-            </ul>
+          {!loading && !errorMessage && (
+            <>
+              {members.length === 0 ? (
+                <p className="spaceMembersEmpty">Inga medlemmar hittades.</p>
+              ) : (
+                <ul className="spaceMembersList">
+             
+                  {owners.map((m) => (
+                    <li key={m.profiles_id} className="spaceMembersRow">
+                      <div className="spaceMembersRowLeft">
+                        <div className="spaceMembersNameRow">
+                          <span className="spaceMembersName">
+                            {m.name ?? "Okänt namn"}
+                          </span>
+                          <span className="spaceMembersBadge">Ägare</span>
+                        </div>
+
+                        <div className="spaceMembersMeta">
+                          {m.email ?? "Ingen e-post"}
+              
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        disabled
+                        title="Du kan inte ta bort ägaren."
+                      >
+                        Ta bort
+                      </button>
+                    </li>
+                  ))}
+
+ 
+                  {nonOwners.map((m) => (
+                    <li key={m.profiles_id} className="spaceMembersRow">
+                      <div className="spaceMembersRowLeft">
+                        <div className="spaceMembersNameRow">
+                          <span className="spaceMembersName">
+                            {m.name ?? "Okänt namn"}
+                          </span>
+                          {m.role?.toLowerCase() === "member" && (
+                            <span className="spaceMembersBadge spaceMembersBadge--muted">
+                              Medlem
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="spaceMembersMeta">
+                          {m.email ?? "Ingen e-post"}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemove(m.profiles_id)}
+                        disabled={loading || m.profiles_id === space?.profiles_id}
+                        className="btn btn-danger"
+                      >
+                        Ta bort
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

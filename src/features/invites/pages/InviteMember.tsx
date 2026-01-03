@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
+import "../styles/InviteMember.css";
+import "../../../styles/Buttons.css";
 
 type Props = {
   spacesID: string;
@@ -7,13 +9,16 @@ type Props = {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, "");
 
-console.log("API_BASE:", API_BASE);
-
 export function InviteMember({ spacesID }: Props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  const clearAlerts = () => {
+    setErrorMessage(null);
+    setSuccess(false);
+  };
 
   const handleInvite = async () => {
     setErrorMessage(null);
@@ -26,8 +31,9 @@ export function InviteMember({ spacesID }: Props) {
       setErrorMessage("Skriv in en e-postadress.");
       return;
     }
-    
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
     const accessToken = sessionData.session?.access_token;
 
     if (sessionError || !accessToken) {
@@ -48,13 +54,17 @@ export function InviteMember({ spacesID }: Props) {
 
       const text = await res.text();
 
-let data: any = null;
-try {
-  data = JSON.parse(text);
-} catch {
-  throw new Error(`Ej JSON från API. Status ${res.status}. Body börjar: ${text.slice(0, 80)}`);
-}
-
+      let data: any = null;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(
+          `Ej JSON från API. Status ${res.status}. Body börjar: ${text.slice(
+            0,
+            80
+          )}`
+        );
+      }
 
       if (!data.ok) {
         setErrorMessage(data.error ?? "Kunde inte skicka inbjudan.");
@@ -71,23 +81,54 @@ try {
   };
 
   return (
-    <section style={{ marginTop: 16, maxWidth: 400 }}>
-      <label>
-        E-postadress
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="namn@email.com"
-        />
-      </label>
+    <section className="inviteMember">
+ 
 
-      <button type="button" onClick={handleInvite} disabled={loading}>
-        {loading ? "Skickar..." : "Skicka inbjudan"}
-      </button>
+      {(errorMessage || success) && (
+        <div
+          className={`inviteMemberAlert ${
+            errorMessage ? "inviteMemberAlert--error" : "inviteMemberAlert--success"
+          }`}
+        >
+          <span>{errorMessage ?? "Inbjudan skickad "}</span>
+          <button
+            type="button"
+            className="inviteMemberAlertClose"
+            onClick={clearAlerts}
+            aria-label="Stäng meddelande"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {success && <p style={{ color: "green" }}>Inbjudan skickad ✅</p>}
+      <div className="inviteMemberRow">
+        <label className="inviteMemberField">
+          <span>E-postadress</span>
+          <input
+            className="inviteMemberInput"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onFocus={clearAlerts}
+            placeholder="namn@email.com"
+            disabled={loading}
+            inputMode="email"
+            autoComplete="email"
+          />
+        </label>
+
+        <button
+          type="button"
+          className="btn btn-primary inviteMemberBtn"
+          onClick={handleInvite}
+          disabled={loading}
+        >
+          {loading ? "Skickar…" : "Skicka"}
+        </button>
+      </div>
+
+   
     </section>
   );
 }

@@ -43,11 +43,11 @@ const redirect = useRedirect("/dashboard");
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1 className="login-title">Log in</h1>
+        <h1 className="login-title">Logga in</h1>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="field">
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">E-post</label>
             <input
               id="email"
               type="email"
@@ -59,7 +59,7 @@ const redirect = useRedirect("/dashboard");
           </div>
 
           <div className="field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Lösenord</label>
             <input
               id="password"
               type="password"
@@ -72,21 +72,21 @@ const redirect = useRedirect("/dashboard");
 
           <div className="login-row">
             <Link className="login-link" to="/auth/forgot-password">
-              Forgot your password?
+              Glömt ditt lösenord?
             </Link>
           </div>
 
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-          <button className="primary-btn" type="submit" disabled={loading}>
-            {loading ? "Loggar in..." : "Log in"}
+          <button className="btn btn-primary loginPrimaryBtn" type="submit" disabled={loading}>
+            {loading ? "Loggar in..." : "Logga in"}
           </button>
         </form>
 
         <p className="login-footer">
-          Don’t have an account?{" "}
+          Inget konto?{" "}
           <Link to={`/auth/signup?redirect=${encodeURIComponent(redirect)}`}>
-            Sign up now
+            Skapa ett!
           </Link>
         </p>
       </div>

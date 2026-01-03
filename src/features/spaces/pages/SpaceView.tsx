@@ -176,7 +176,7 @@ const SpaceView = () => {
 
       {!loading && !errorMessage && space && (
         <>
-          {/* ===== HEADER ===== */}
+   
           <header className="space-hero">
             <div className="space-heroTop">
               <button
@@ -248,7 +248,7 @@ const SpaceView = () => {
             )}
           </header>
 
-          {/* ===== FILTER BAR ===== */}
+
           <div className="spaceFilterBar">
             <div className="spaceFilterLeft">
               <label className="space-filter">
@@ -298,7 +298,7 @@ const SpaceView = () => {
             </div>
           </div>
 
-          {/* ===== ITEMS ===== */}
+
           <section className="items-section">
             <div className="items-header">
               <span className="items-count">{filteredItems.length} st</span>

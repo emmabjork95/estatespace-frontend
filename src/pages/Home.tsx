@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 
 import "../styles/Home.css";
-import logo from "../assets/logo-liggande.png";
+
 import pic3 from "../assets/pic3.png";
-import test from "../assets/test.png";
+import ipad from "../assets/estatespace-frontpage.svg";
+import logo from "../assets/logo-liggande-single.png"
 
 export default function Home() {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
+  const section2Ref = useRef<HTMLElement | null>(null);
+  const section3Ref = useRef<HTMLElement | null>(null);
+  const section4Ref = useRef<HTMLElement | null>(null);
+  
 
   useEffect(() => {
     const checkUser = async () => {
@@ -20,113 +25,144 @@ export default function Home() {
     checkUser();
   }, [navigate]);
 
+const scrollTo = (ref: React.RefObject<HTMLElement | null>) => {
+  ref.current?.scrollIntoView({ behavior: "smooth" });
+};
+
+
+
+
+
   if (checking) return null;
 
   return (
     <div className="landing">
-      {/* Section 1 */}
-      <section className="panel panel--white">
-        <div className="panel-inner">
-        <div className="logo-home-wrapper">
-          <img
-            src={logo}
-            alt="EstateSpace logo"
-            className="logo-img-home"
-          />
-        </div>
-        
-          <p>Fota, skapa och dela med vänner och familj. Allt på ett ställe.</p>
 
-          <div className="hero-images">
-            <div className="img-card">
-                <img src={test} alt="Exempel på space" />
+      <section className="panel panel--hero panel--heroClickup">
+        <div className="panel-inner">
+          <div className="heroRow">
+            <div className="heroCopy">
+           <img
+                  src={logo}
+                  className="logo-frontpage"
+                  alt="Förhandsvisning av EstateSpace"
+      
+                />
+                   <h3>
+                Sort Smart. Share Easy.
+              </h3>
+
+              <p className="heroSub">
+              Organisera vinden eller förrådet visuellt. Bjud in familj och vänner till ditt space.
+
+              </p>
+
+              <div className="heroCtas">
+                <Link to="/auth/signup" className="btn btn-primary heroBtn heroBtnPrimary">
+                  Skapa konto
+                </Link>
+                <Link to="/auth/login" className="btn btn-secondary heroBtn">
+                  Logga in
+                </Link>
+              </div>
+
+  
             </div>
-             <div className="img-card">
-                <img src={test} alt="Exempel på space" />
+
+            <div className="heroVisual">
+              <div className="visualCard">
+                <img
+                  src={ipad}
+                  alt="Förhandsvisning av EstateSpace"
+                  className="heroIllustration"
+                  loading="lazy"
+                />
+              </div>
             </div>
-             <div className="img-card">
-                <img src={test} alt="Exempel på space" />
-            </div>
-            
           </div>
 
-        <div className="hero-btns">
-            <Link to="/auth/login" className="btn btn-outline">LOG IN</Link>
-            <Link to="/auth/signup" className="btn btn-filled">SIGN UP</Link>
-        </div>
+
+
+       <button
+  className="scroll-indicator scroll-indicator--pill"
+  onClick={() => scrollTo(section2Ref)}
+  aria-label="Scrolla ner"
+  type="button"
+>
+  <span className="scroll-indicator__arrow" />
+</button>
+
         </div>
       </section>
 
-      {/* Section 2 */}
-      <section className="panel panel--pink">
+      {/* ===== SECTION 2 ===== */}
+      <section ref={section2Ref} className="panel panel--pink">
         <div className="panel-inner">
           <h2>Skapa anslagstavlor</h2>
-          <p>Varje space får ett collage av dina bilder – precis som Pinterest.</p>
+          <p>Varje space blir ett överskådligt collage av items – enkelt att få helhetskoll.</p>
+
         </div>
+<button
+  className="scroll-indicator scroll-indicator--pill"
+  onClick={() => scrollTo(section3Ref)}
+  aria-label="Scrolla ner"
+  type="button"
+>
+  <span className="scroll-indicator__arrow" />
+</button>
+
       </section>
 
-{/* Section 3 */}
-<section className="panel panel--lavender">
-  <div className="panel-inner panel-split">
-    
-    {/* VÄNSTER: text */}
-    <div className="panel-text">
-      <h2 className="title-se">Dela och samarbeta</h2>
-      <p>Bjud in andra, visa intresse och håll allt organiserat på ett ställe.</p>
-    </div>
+      {/* ===== SECTION 3 ===== */}
+      <section ref={section3Ref} className="panel panel--lavender">
+        <div className="panel-inner panel-split">
+          <div className="panel-text">
+            <h2>Dela och samarbeta</h2>
+            <p>
+              Bjud in familj och vänner, markera <strong>intresserad</strong> eller{" "}
+              <strong>avstår</strong> och håll allt samlat.
+            </p>
 
-    {/* HÖGER: bild */}
-    <div className="panel-media">
-      <img
-        src={pic3}
-        alt="EstateSpace illustration"
-        className="panel-image"
-      />
-    </div>
+            <ul className="feature-list">
+              <li> Medlemmar kan reagera direkt på items</li>
+              <li>Du ser snabbt vem som vill ha vad</li>
+              <li>Notiser håller alla uppdaterade</li>
+            </ul>
+          </div>
 
-  </div>
-</section>
+          <div className="panel-media">
+            <img src={pic3} alt="EstateSpace illustration" className="panel-image" loading="lazy" />
+          </div>
+        </div>
+        <button
+  className="scroll-indicator scroll-indicator--pill"
+  onClick={() => scrollTo(section4Ref)}
+  aria-label="Scrolla ner"
+  type="button"
+>
+  <span className="scroll-indicator__arrow" />
+</button>
 
-      {/* Section 4 */}
-      <section className="panel panel--dark">
+      </section>
+
+      {/* ===== SECTION 4 ===== */}
+      <section ref={section4Ref} className="panel panel--dark">
         <div className="panel-inner">
-          <h2>Redo?</h2>
-          <p>Skapa ditt första space på några sekunder.</p>
-          <button className="cta cta--light" onClick={() => navigate("/signup")}>
-            Skapa konto
-          </button>
+          <h2>Redo att komma igång?</h2>
+          <p>Skapa ett space på några sekunder och börja strukturera direkt.</p>
+
+          <div className="hero-actions hero-actions--center">
+            <button className="btn btn-primary heroBtn heroBtnPrimary" onClick={() => navigate("/auth/signup")}>
+              Skapa konto
+            </button>
+            <button className="btn btn-secondary heroBtn" onClick={() => navigate("/auth/login")}>
+              Logga in
+            </button>
+            
+          </div>
         </div>
         
-      <footer className="site-footer">
-  <div className="footer-content">
-    <div className="footer-column">
-      <h4>EstateSpace</h4>
-      <p>Organisera och strukturera dina spaces.</p>
-    </div>
-
-    <div className="footer-column">
-      <h4>Navigering</h4>
-      <ul>
-        <li>Om</li>
-        <li>Kontakt</li>
-        <li>Estates</li>
-      </ul>
-    </div>
-
-    <div className="footer-column">
-      <h4>Kontakt</h4>
-      <p>info@estatespace.se</p>
-      <p>Stockholm</p>
-    </div>
-  </div>
-
-  <div className="footer-bottom">
-    © {new Date().getFullYear()} EstateSpace
-  </div>
-</footer>
-
       </section>
-      
     </div>
   );
 }
