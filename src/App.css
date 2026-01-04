@@ -1,12 +1,12 @@
 .app-shell {
-  min-height: 100vh;
+  min-height: 100%;
+  width: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; 
-min-width: 100vw;
-
 }
+
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
