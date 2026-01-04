@@ -5,11 +5,10 @@
   place-items: center;
   padding: 28px 16px;
 
-  background-image: url(../../../assets/background-plain.png);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: transparent;
 }
+
+
 
 
 
