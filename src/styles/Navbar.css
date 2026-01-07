@@ -12,17 +12,16 @@
   background: #fff;
 }
 
+
 .navbar {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
 
-  padding: 14px 40px;
+  padding: 12px 16px;
   min-height: 60px;
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
@@ -31,34 +30,17 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(../assets/background-femton.png);
+  background-image: url(../assets/background-new.png);
   background-size: cover;
   background-position: center;
-  opacity: 0.12;
+  opacity: 0.75;
   z-index: -2;
 }
 
-
 .navbar-overlay {
   position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.72);
-  z-index: -1;
-  pointer-events: none;
-}
+  
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  justify-self: end;
-}
-
-.nav-center {
-  justify-self: center;
 }
 
 .logo-link {
@@ -67,10 +49,24 @@
 }
 
 .logo-img {
-  height: 60px;
+  height: 30px;
   width: auto;
   display: block;
 }
+
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+
+
+.nav-right {
+  display: none;
+}
+
 
 .nav-icon-link {
   display: inline-flex;
@@ -115,16 +111,9 @@
   filter: brightness(0.35) contrast(1.1);
 }
 
-.notif-wrap {
-  position: relative;
-}
 
 .notif-trigger {
   position: relative;
-}
-
-.notif-trigger:focus {
-  outline: none;
 }
 
 .notif-badge {
@@ -139,7 +128,6 @@
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
-  line-height: 1;
 
   display: inline-flex;
   align-items: center;
@@ -147,22 +135,21 @@
 
   background: #e53935;
   color: #fff;
-
   border: 2px solid rgba(255, 255, 255, 0.9);
 }
 
 .notif-dropdown {
   position: absolute;
   right: 0;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
 
-  width: 360px;
-  max-height: 420px;
+  width: min(380px, calc(100vw - 32px));
+  max-height: 440px;
   overflow: auto;
 
   background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 16px;
 
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
   z-index: 10000;
@@ -172,7 +159,7 @@
   content: "";
   position: absolute;
   top: -8px;
-  right: 14px;
+  right: 18px;
 
   width: 14px;
   height: 14px;
@@ -188,12 +175,13 @@
   justify-content: space-between;
   align-items: center;
 
-  padding: 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .notif-header strong {
   font-size: 14px;
+  letter-spacing: -0.2px;
 }
 
 .notif-markall {
@@ -213,24 +201,27 @@
 }
 
 .notif-empty {
-  padding: 12px;
+  padding: 14px;
   font-size: 13px;
   color: rgba(0, 0, 0, 0.65);
 }
 
+
 .notif-list {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .notif-item {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: 12px;
 
-  padding: 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  align-items: flex-start;
 }
 
 .notif-item:last-child {
@@ -253,12 +244,14 @@
 .notif-text {
   display: grid;
   gap: 6px;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .notif-msg {
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.25;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
   color: rgba(0, 0, 0, 0.88);
 }
 
@@ -268,12 +261,12 @@
 }
 
 .notif-readbtn {
-  border: none;
-  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.03);
   cursor: pointer;
 
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 10px;
 
   display: inline-flex;
@@ -282,19 +275,168 @@
 
   font-size: 14px;
   color: rgba(0, 0, 0, 0.75);
+
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.05s ease;
 }
 
 .notif-readbtn:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.07);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.notif-readbtn:active {
+  transform: translateY(1px);
 }
 
 
-@media (max-width: 768px) {
+.nav-burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.nav-burger:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 2px;
+}
+
+
+.nav-menuOverlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  border: none;
+  z-index: 150;
+}
+
+.nav-mobileMenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 16px;
+
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+
+  padding: 8px;
+  z-index: 200;
+  min-width: 180px;
+}
+
+.nav-mobileMenu button {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+
+  text-align: left;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.nav-mobileMenu button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.nav-mobileMenu button.logout-btn {
+  background: rgba(220, 38, 38, 0.08);
+  color: rgb(160, 20, 20);
+}
+
+.nav-mobileMenu button.logout-btn:hover {
+  background: rgba(220, 38, 38, 0.14);
+}
+
+/* =========================
+   480–768
+========================= */
+
+@media (min-width: 480px) {
   .navbar {
-    padding: 12px 20px;
+    padding-top: 20px;
   }
 
   .logo-img {
-    height: 54px;
+    height: 30px;
+  }
+
+  .nav-mobileMenu {
+    right: 20px;
   }
 }
+
+/* =========================
+   769–1279 (DESKTOP)
+========================= */
+
+@media (min-width: 769px) {
+  .navbar {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 14px 40px;
+    min-height: 84px;
+    
+  }
+
+  .logo-img {
+    height: 30px;
+     width: auto;
+    display: block;
+  }
+
+    .nav-actions {
+    display: none;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-burger {
+    display: none;
+  }
+
+  .nav-mobileMenu,
+  .nav-menuOverlay {
+    display: none;
+  }
+}
+
+/* =========================
+   1280-1439 (DESKTOP)
+========================= */
+
+@media (min-width: 1280px) {
+  .navbar {
+    padding: 14px 56px;
+  }
+
+  .nav-right {
+    gap: 20px;
+  }
+
+    .logo-img {
+    height: 30px;
+     width: auto;
+    display: block;
+  }
+}
+
+
+
+

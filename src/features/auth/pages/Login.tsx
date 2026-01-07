@@ -5,13 +5,18 @@ import { supabase } from "../../../lib/supabaseClient";
 import {  useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
 import { useRedirect } from "../hooks/useRedirect";
+import { useSearchParams } from "react-router-dom";
+
 
 
 const Login = () => {
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
 const redirect = useRedirect("/dashboard");
 
+const [searchParams] = useSearchParams();
+const redirectAccept = searchParams.get("redirect") || "";
+const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +49,13 @@ const redirect = useRedirect("/dashboard");
     <div className="login-page">
       <div className="login-card">
         <h1 className="login-title">Logga in</h1>
+
+        {isInviteRedirect && (
+  <div className="login-alert login-alert--info">
+    Du behöver logga in för att acceptera inbjudan.
+  </div>
+)}
+
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="field">

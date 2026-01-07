@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import { NotFound } from "./pages/NotFound";
 import { HomeLayout } from "./pages/Layouts/HomeLayout";
 import { MainLayout } from "./pages/Layouts/MainLayout";
 import { AuthLayout } from "./pages/Layouts/AuthLayout";
@@ -19,6 +18,7 @@ import { AcceptInvite } from "./features/invites/pages/AcceptInvites";
 import SpaceMembers from "./features/invites/pages/SpaceMembers";
 import ForgotPassword from "./features/auth/pages/ForgotPassword";
 import ResetPassword from "./features/auth/pages/ResetPassword";
+import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
     {
