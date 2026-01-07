@@ -1,9 +1,9 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { STATUS_OPTIONS, STATUS_LABELS, type Item, type Status } from "../ItemsTypes";
 import "../styles/EditItem.css";
-import "../../../styles/Buttons.css";
+import "../../../shared/components/ui/Buttons.css";
 
 
 

@@ -1,7 +1,7 @@
 
 import { type FormEvent } from "react";
 import { useState } from "react";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import {  useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
 import { useRedirect } from "../hooks/useRedirect";

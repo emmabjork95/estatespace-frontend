@@ -30,7 +30,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(../assets/background-new.png);
+  background-image: url(../assets/backgrounds/background.png);
   background-size: cover;
   background-position: center;
   opacity: 0.75;

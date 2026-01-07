@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../shared/lib/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 
-import "../styles/Home.css";
+import "./Home.css";
 
-import ipad from "../assets/estatespace-frontpage.svg";
-import logo from "../assets/logo-liggande-single.png";
-import section3 from "../assets/section3.svg";
-import storage from "../assets/storage.svg";
-import phone from "../assets/photo1.svg";
-import slogan from "../assets/slogan2.svg";
 
-import heroBg from "../assets/testBackground7.png";
+import logo from "../../assets/logos/logo.png";
+import slogan from "../../assets/logos/slogan.svg";
+import heroBg from "../../assets/backgrounds/hero-background.png";
+import storage from "../../assets/home-assets/messy-storage.svg";
+import camera from "../../assets/home-assets/camera.svg";
+import ipad from "../../assets/home-assets/ipad.svg";
+import interested from "../../assets/home-assets/interested.svg";
+
+
 
 export default function Home() {
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ export default function Home() {
 
             <li className="howStep">
               <div className="howIcon howIcon--img" aria-hidden="true">
-                <img src={phone} alt="" />
+                <img src={camera} alt="" />
               </div>
               <p className="howText">
                 <span className="howNr">2.</span> Fota föremålet
@@ -107,7 +109,7 @@ export default function Home() {
         </p>
       </div>
 
-      <img className="shareImg" src={section3} alt="" loading="lazy" />
+      <img className="shareImg" src={interested} alt="" loading="lazy" />
     </div>
   </div>
 </section>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import "../styles/InviteMember.css";
-import "../../../styles/Buttons.css";
+import "../../../shared/components/ui/Buttons.css";
 
 type Props = {
   spacesID: string;

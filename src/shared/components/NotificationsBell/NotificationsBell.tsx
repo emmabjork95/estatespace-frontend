@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import "../styles/Notifications.css";
+import "./Notifications.css";
 
 
 

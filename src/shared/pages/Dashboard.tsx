@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../supabaseClient";
-import "../styles/Dashboard.css";
+import { supabase } from "../../shared/lib/supabaseClient";
+import "./Dashboard.css";
 
 type SpaceCardBase = {
   spaces_id: string;

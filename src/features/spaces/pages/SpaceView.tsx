@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { type ItemListItem } from "../../items/ItemsTypes";
 import { type Space } from "../SpacesTypes";
 import "../styles/SpaceView.css";
-import "../../../styles/Buttons.css";
+import "../../../shared/components/ui/Buttons.css";
 
 type ItemWithCategory = ItemListItem & {
   category?: string | null;

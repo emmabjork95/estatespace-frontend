@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import "../styles/Profile.css";
-import "../../../styles/Buttons.css";
+import "../../../shared/components/ui/Buttons.css";
 
 export function Profile() {
   const navigate = useNavigate();

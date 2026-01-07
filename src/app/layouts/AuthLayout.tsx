@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { AuthNavbar } from "../AuthNavbar";
-import "../../styles/AuthLayout.css";
+import { AuthNavbar } from "../../shared/components/AuthNavbar/AuthNavbar";
+import "./AuthLayout.css";
 
 export function AuthLayout() {
   return (

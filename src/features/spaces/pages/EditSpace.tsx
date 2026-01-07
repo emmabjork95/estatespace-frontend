@@ -1,9 +1,9 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import { type Space } from "../SpacesTypes";
 import "../styles/EditSpace.css";
-import "../../../styles/Buttons.css";
+import "../../../shared/components/ui/Buttons.css";
 
 const EditSpace = () => {
   const navigate = useNavigate();

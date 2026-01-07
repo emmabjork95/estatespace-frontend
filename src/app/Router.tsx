@@ -1,24 +1,24 @@
 import { createBrowserRouter } from "react-router-dom";
-import { HomeLayout } from "./pages/Layouts/HomeLayout";
-import { MainLayout } from "./pages/Layouts/MainLayout";
-import { AuthLayout } from "./pages/Layouts/AuthLayout";
-import { Signup } from "./features/auth/pages/Signup";
-import Login from "./features/auth/pages/Login";
-import { RequireAuth } from "./components/RequireAuth";
-import Dashboard from "./pages/Dashboard";
-import CreateSpaces from "./features/spaces/pages/CreateSpaces";
-import SpaceView from "./features/spaces/pages/SpaceView";
-import CreateItem from "./features/items/pages/CreateItem";
-import ItemDetail from "./features/items/pages/ItemDetail";
-import EditItem from "./features/items/pages/EditItem";
-import Home from "./pages/Home";
-import EditSpace from "./features/spaces/pages/EditSpace";
-import { Profile } from "./features/auth/pages/Profile";
-import { AcceptInvite } from "./features/invites/pages/AcceptInvites";
-import SpaceMembers from "./features/invites/pages/SpaceMembers";
-import ForgotPassword from "./features/auth/pages/ForgotPassword";
-import ResetPassword from "./features/auth/pages/ResetPassword";
-import NotFound from "./pages/NotFound";
+import { HomeLayout } from "./layouts/HomeLayout";
+import { MainLayout } from "./layouts/MainLayout";
+import { AuthLayout } from "./layouts/AuthLayout";
+import { Signup } from "../features/auth/pages/Signup";
+import Login from "../features/auth/pages/Login";
+import { RequireAuth } from "./routes/RequireAuth";
+import Dashboard from "../shared/pages/Dashboard";
+import CreateSpaces from "../features/spaces/pages/CreateSpaces";
+import SpaceView from "../features/spaces/pages/SpaceView";
+import CreateItem from "../features/items/pages/CreateItem";
+import ItemDetail from "../features/items/pages/ItemDetail";
+import EditItem from "../features/items/pages/EditItem";
+import Home from "../shared/pages/Home";
+import EditSpace from "../features/spaces/pages/EditSpace";
+import { Profile } from "../features/auth/pages/Profile";
+import { AcceptInvite } from "../features/invites/pages/AcceptInvites";
+import SpaceMembers from "../features/invites/pages/SpaceMembers";
+import ForgotPassword from "../features/auth/pages/ForgotPassword";
+import ResetPassword from "../features/auth/pages/ResetPassword";
+import NotFound from "../shared/pages/NotFound";
 
 export const router = createBrowserRouter([
     {

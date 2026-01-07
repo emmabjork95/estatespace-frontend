@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
-import "./App.css";
-import "./styles/Home.css";
+import "../shared/styles/App.css";
+import "../shared/pages/Home.css";
 import { router } from "./Router";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./providers/AuthContext";
 
 
 function App() {

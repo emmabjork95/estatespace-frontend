@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import { InviteMember } from "../../invites/pages/InviteMember";
 import "../styles/SpaceMembers.css";
-import "../../../styles/Buttons.css";
+import "../../../shared/components/ui/Buttons.css";
 
 type SpaceRow = {
   spaces_id: string;

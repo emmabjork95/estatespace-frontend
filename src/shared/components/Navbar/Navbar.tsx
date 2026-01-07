@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { supabase } from "../supabaseClient";
-import "../styles/Navbar.css";
-import "../styles/Buttons.css";
+import { supabase } from "../../lib/supabaseClient";
+import "./Navbar.css";
+import "../ui/Buttons.css";
 
-import logo from "../assets/logo-liggande-single.png";
-import settingsIcon from "../assets/settings.svg";
-import bellIcon from "../assets/bell.svg";
-import homeIcon from "../assets/homeIcon2.png";
+import logo from "../../../assets/logos/logo.png";
+import settingsIcon from "../../../assets/icons/settings.svg";
+import bellIcon from "../../../assets/icons/bell.svg";
+import homeIcon from "../../../assets/icons/home.png";
 
-import { NotificationsBell } from "../components/NotificationsBell";
+import { NotificationsBell } from "../NotificationsBell/NotificationsBell";
 
 export const Navbar = () => {
   const navigate = useNavigate();
