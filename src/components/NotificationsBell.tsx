@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
+import "../styles/Notifications.css";
+
+
 
 type NotificationRow = {
   notifications_id: string;
@@ -87,9 +90,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
 
     setLoading(false);
 
-    if (error) {
-      return;
-    }
+    if (error) return;
 
     setRows((data ?? []) as NotificationRow[]);
   };
@@ -119,6 +120,23 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       .eq("is_read", false);
 
     if (error) fetchNotifications();
+  };
+
+  const deleteOne = async (id: string) => {
+    const prev = rows;
+
+    setRows((curr) => curr.filter((r) => r.notifications_id !== id));
+
+    const { error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("notifications_id", id);
+
+    if (error) {
+      console.log("delete notif error:", error);
+      setRows(prev);
+      fetchNotifications();
+    }
   };
 
   const goToFromNotification = async (n: NotificationRow) => {
@@ -239,16 +257,22 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
                     </div>
                   </button>
 
-                  {!n.is_read && (
+                  <div className="notif-actions">
+              
+
                     <button
                       type="button"
-                      className="notif-readbtn"
-                      onClick={() => markOneAsRead(n.notifications_id)}
-                      title="Markera som läst"
+                      className="notif-deletebtn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteOne(n.notifications_id);
+                      }}
+                      title="Ta bort notis"
+                      aria-label="Ta bort notis"
                     >
-                      ✓
+                      X
                     </button>
-                  )}
+                  </div>
                 </li>
               ))}
             </ul>

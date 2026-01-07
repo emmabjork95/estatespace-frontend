@@ -1,0 +1,18 @@
+.notif-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.notif-deletebtn {
+  width: 34px;
+  height: 34px;
+  color: rgb(156, 156, 156);
+  background: transparent;
+  cursor: pointer;
+}
+
+.notif-deletebtn:hover {
+  background: rgba(255, 255, 255, 0.95);
+}

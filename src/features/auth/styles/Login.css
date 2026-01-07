@@ -8,10 +8,6 @@
   background: transparent;
 }
 
-
-
-
-
 .login-card {
   position: relative;
   width: min(420px, 92vw);
@@ -22,7 +18,7 @@
 
   padding: 26px 24px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
-
+  margin-top: 120px;
   text-align: center;
 }
 
@@ -150,15 +146,30 @@
 }
 
 .login-footer a {
-  color: rgba(0, 0, 0, 0.70);
-  font-weight: 800;
-  text-decoration: none;
-  padding: 6px 8px;
-  border-radius: 10px;
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 0;
 }
 
-.login-footer a:hover {
-  background: rgba(0, 0, 0, 0.06);
+.login-alert {
+  margin: 12px 0 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  border: 1px solid transparent;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.login-alert--info {
+  background: rgba(88, 101, 242, 0.08);
+  border-color: rgba(88, 101, 242, 0.22);
+  color: #2c3ccf;
 }
 
 

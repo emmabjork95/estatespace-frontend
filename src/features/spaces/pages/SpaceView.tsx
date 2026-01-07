@@ -24,7 +24,6 @@ const SpaceView = () => {
   const [ownerName, setOwnerName] = useState<string | null>(null);
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null);
 
-
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
@@ -63,7 +62,6 @@ const SpaceView = () => {
         return;
       }
 
-     
       const {
         data: { user },
         error: userError,
@@ -139,7 +137,6 @@ const SpaceView = () => {
       return;
     }
 
-
     if (user.id === space.profiles_id) {
       setErrorMessage("Ägaren kan inte lämna sitt eget space.");
       return;
@@ -176,7 +173,6 @@ const SpaceView = () => {
 
       {!loading && !errorMessage && space && (
         <>
-   
           <header className="space-hero">
             <div className="space-heroTop">
               <button
@@ -187,51 +183,6 @@ const SpaceView = () => {
               >
                 Tillbaka
               </button>
-
-              <div className="space-heroActions">
-  
-                {!isOwner && (
-                  <button
-                    className="btn btn-danger"
-                    type="button"
-                    onClick={handleLeaveSpace}
-                    disabled={loading}
-                  >
-                    Lämna space
-                  </button>
-                )}
-
-                {isOwner && (
-                  <button
-                    className="btn btn-ghost"
-                    type="button"
-                    onClick={() => navigate(`/spaces/${space.spaces_id}/members`)}
-                  >
-                    Medlemmar
-                  </button>
-                )}
-
-                {isOwner && (
-                  <button
-                    className="btn btn-ghost"
-                    type="button"
-                    onClick={() => navigate(`/spaces/${space.spaces_id}/edit`)}
-                  >
-                    Redigera Space
-                  </button>
-                )}
-
-      
-                {isOwner && (
-                  <button
-                    className="btn btn-primary"
-                    type="button"
-                    onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
-                  >
-                    + Lägg till föremål
-                  </button>
-                )}
-              </div>
             </div>
 
             <h1 className="space-title">{space.name}</h1>
@@ -239,6 +190,49 @@ const SpaceView = () => {
             {space.description && (
               <p className="space-description">{space.description}</p>
             )}
+            
+            <div className="space-heroActions">
+              {!isOwner && (
+                <button
+                  className="btn btn-danger"
+                  type="button"
+                  onClick={handleLeaveSpace}
+                  disabled={loading}
+                >
+                  Lämna space
+                </button>
+              )}
+
+              {isOwner && (
+                <button
+                  className="btn btn-ghost"
+                  type="button"
+                  onClick={() => navigate(`/spaces/${space.spaces_id}/members`)}
+                >
+                  Medlemmar
+                </button>
+              )}
+
+              {isOwner && (
+                <button
+                  className="btn btn-ghost"
+                  type="button"
+                  onClick={() => navigate(`/spaces/${space.spaces_id}/edit`)}
+                >
+                  Redigera Space
+                </button>
+              )}
+
+              {isOwner && (
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
+                >
+                  + Lägg till föremål
+                </button>
+              )}
+            </div>
 
             {!isOwner && (
               <div className="space-owner">
@@ -247,7 +241,6 @@ const SpaceView = () => {
               </div>
             )}
           </header>
-
 
           <div className="spaceFilterBar">
             <div className="spaceFilterLeft">
@@ -298,7 +291,6 @@ const SpaceView = () => {
             </div>
           </div>
 
-
           <section className="items-section">
             <div className="items-header">
               <span className="items-count">{filteredItems.length} st</span>
@@ -314,9 +306,7 @@ const SpaceView = () => {
                     <button
                       className="btn btn-primary"
                       type="button"
-                      onClick={() =>
-                        navigate(`/spaces/${space.spaces_id}/items/new`)
-                      }
+                      onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
                     >
                       +
                     </button>

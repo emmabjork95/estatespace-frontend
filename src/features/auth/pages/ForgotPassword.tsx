@@ -56,7 +56,7 @@ const ForgotPassword = () => {
 
           {success && (
             <div className="forgot-success">
-              Om adressen finns i systemet har vi skickat ett mejl 📬
+              Om adressen finns i systemet har vi skickat ett återställningsmail. 
             </div>
           )}
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../../lib/supabaseClient";
+import "../styles/AcceptInvite.css";
+import "../../../styles/Buttons.css";
 
 type InviteRow = {
   invited_email: string;
@@ -40,7 +42,9 @@ export function AcceptInvite() {
 
       if (inviteError || !inviteData) {
         setLoading(false);
-        setErrorMessage("Inbjudan hittades inte, eller så har du inte behörighet.");
+        setErrorMessage(
+          "Inbjudan hittades inte, eller så har du inte behörighet."
+        );
         return;
       }
 
@@ -105,54 +109,86 @@ export function AcceptInvite() {
     navigate(`/spaces/${data}`);
   };
 
-  if (loading) return <p>Laddar inbjudan...</p>;
-
   const emailMismatch =
     !!invite &&
     !!currentEmail &&
     currentEmail.toLowerCase() !== invite.invited_email.toLowerCase();
 
+  if (loading) {
+    return (
+      <div className="invite-page">
+        <div className="invite-card">
+          <h1 className="invite-title">Acceptera inbjudan</h1>
+          <p className="invite-sub">Laddar…</p>
+          <div className="invite-skeleton" />
+          <div className="invite-skeleton" />
+          <div className="invite-skeleton invite-skeleton--wide" />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ maxWidth: 520 }}>
-      <h1>Acceptera inbjudan</h1>
+    <div className="invite-page">
+      <div className="invite-card">
+        <h1 className="invite-title">Acceptera inbjudan</h1>
 
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {errorMessage && (
+          <div className="invite-alert invite-alert--error">
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
-      {!errorMessage && invite && (
-        <>
-          <p>
-            Inbjudan är skickad till: <strong>{invite.invited_email}</strong>
-          </p>
+        {!errorMessage && invite && (
+          <>
+            <p className="invite-sub">
+              Inbjudan är skickad till:{" "}
+              <span className="invite-strong">{invite.invited_email}</span>
+            </p>
 
-          {emailMismatch && (
-            <>
-              <p className="error-message">
-                Du är inloggad som <strong>{currentEmail}</strong>, men inbjudan är för{" "}
-                <strong>{invite.invited_email}</strong>.
-              </p>
+            {emailMismatch && (
+  <>
+    <div className="invite-alert invite-alert--error">
+      <span>
+        Du är inloggad som{" "}
+        <span className="invite-strong">{currentEmail}</span>, men
+        inbjudan är för{" "}
+        <span className="invite-strong">{invite.invited_email}</span>.
+      </span>
+    </div>
 
-              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                <button type="button" onClick={handleSignOutAndContinue}>
-                  Logga ut och fortsätt
-                </button>
+    <div className="invite-actions">
+        <button
+        type="button"
+        className="btn"
+        onClick={handleGoToLogin}
+      >
+        Logga in med annat konto
+      </button>
+      <button
+        type="button"
+        className="btn"
+        onClick={handleSignOutAndContinue}
+      >
+        Logga ut
+      </button>
 
-                <button type="button" onClick={handleGoToLogin}>
-                  Logga in med rätt konto
-                </button>
-              </div>
-            </>
-          )}
+    
+    </div>
+  </>
+)}
 
-          <button
-            type="button"
-            onClick={handleAccept}
-            disabled={!currentEmail || emailMismatch}
-            style={{ marginTop: 12 }}
-          >
-            Acceptera och gå med
-          </button>
-        </>
-      )}
+            <button
+              type="button"
+              onClick={handleAccept}
+              disabled={!currentEmail || emailMismatch}
+              className="btn btn-accept "
+            >
+              Acceptera och gå med
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
