@@ -6,13 +6,10 @@ import { AuthProvider } from "./providers/AuthContext";
 import "../shared/components/ui/Global.css";
 
 function App() {
-
   return (
     <AuthProvider>
-      <div
-        className="app-shell">
-      
-      <RouterProvider router={router} />
+      <div className="app-shell">
+        <RouterProvider router={router} />
       </div>
     </AuthProvider>
   );

@@ -1,15 +1,12 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabaseClient";
-import { type Space } from "../SpacesTypes";
 import "../styles/EditSpace.css";
 import "../../../shared/components/ui/Buttons.css";
 
 const EditSpace = () => {
   const navigate = useNavigate();
   const { spacesID } = useParams();
-
-  const [space, setSpace] = useState<Space | null>(null);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,11 +16,13 @@ const EditSpace = () => {
   const [deleting, setDeleting] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const disabled = saving || deleting;
 
   const clearAlerts = () => {
     setErrorMessage(null);
-    setMessage(null);
+    setSuccessMessage(null);
   };
 
   useEffect(() => {
@@ -50,7 +49,7 @@ const EditSpace = () => {
 
       const { data, error } = await supabase
         .from("spaces")
-        .select("spaces_id, profiles_id, name, description")
+        .select("profiles_id, name, description")
         .eq("spaces_id", spacesID)
         .single();
 
@@ -66,7 +65,6 @@ const EditSpace = () => {
         return;
       }
 
-      setSpace(data as Space);
       setName(data.name ?? "");
       setDescription(data.description ?? "");
     };
@@ -90,6 +88,7 @@ const EditSpace = () => {
     }
 
     setSaving(true);
+
     try {
       const {
         data: { user },
@@ -115,17 +114,17 @@ const EditSpace = () => {
         return;
       }
 
-      setMessage("Ändringar sparades");
+      setSuccessMessage("Ändringar sparades");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDeleteSpace = async () => {
-    if (!spacesID || !space) return;
+    if (!spacesID) return;
 
     const ok = window.confirm(
-      `Är du säker att du vill radera "${space.name}"?\n\nDetta går inte att ångra.`
+      `Är du säker att du vill radera "${name || "detta space"}"?\n\nDetta går inte att ångra.`
     );
     if (!ok) return;
 
@@ -184,7 +183,7 @@ const EditSpace = () => {
             className="btn btn-ghost"
             type="button"
             onClick={() => navigate(`/spaces/${spacesID}`)}
-            disabled={saving || deleting}
+            disabled={disabled}
           >
             Tillbaka
           </button>
@@ -193,7 +192,7 @@ const EditSpace = () => {
             type="button"
             className="btn btn-danger"
             onClick={handleDeleteSpace}
-            disabled={saving || deleting}
+            disabled={disabled}
           >
             {deleting ? "Raderar…" : "Ta bort Space"}
           </button>
@@ -203,13 +202,13 @@ const EditSpace = () => {
           <h2>Redigera space</h2>
         </div>
 
-        {(errorMessage || message) && (
+        {(errorMessage || successMessage) && (
           <div
             className={`Alert ${
               errorMessage ? "Alert--error" : "Alert--success"
             }`}
           >
-            <span className="AlertText">{errorMessage ?? message}</span>
+            <span className="AlertText">{errorMessage ?? successMessage}</span>
             <button
               className="AlertClose"
               type="button"
@@ -221,11 +220,7 @@ const EditSpace = () => {
           </div>
         )}
 
-        {!errorMessage && !space && (
-          <p className="editSpaceEmpty">Kunde inte visa spacet.</p>
-        )}
-
-        {!errorMessage && space && (
+        {!errorMessage && (
           <form onSubmit={handleSubmit} className="editSpaceForm">
             <label className="editSpaceField">
               <span>Namn</span>
@@ -235,7 +230,7 @@ const EditSpace = () => {
                 onChange={(e) => setName(e.target.value)}
                 onFocus={clearAlerts}
                 required
-                disabled={saving || deleting}
+                disabled={disabled}
                 placeholder="t.ex. Sommarstugan"
               />
             </label>
@@ -249,28 +244,23 @@ const EditSpace = () => {
                 onFocus={clearAlerts}
                 rows={4}
                 placeholder="Valfritt"
-                disabled={saving || deleting}
+                disabled={disabled}
               />
             </label>
 
             <div className="editSpaceActions">
-                  <button
-                className="btn btn-primary"
-                type="submit"
-                disabled={saving || deleting}
-              >
+              <button className="btn btn-primary" type="submit" disabled={disabled}>
                 {saving ? "Sparar…" : "Spara ändringar"}
               </button>
+
               <button
                 className="btn btn-secondary"
                 type="button"
                 onClick={() => navigate(`/spaces/${spacesID}`)}
-                disabled={saving || deleting}
+                disabled={disabled}
               >
                 Avbryt
               </button>
-
-          
             </div>
           </form>
         )}

@@ -15,13 +15,7 @@ export const RequireAuth = ({ children }: Props) => {
   }
 
   if (!user) {
-    return (
-      <Navigate
-        to="/auth/login"
-        state={{ from: location }}
-        replace
-      />
-    );
+    return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;

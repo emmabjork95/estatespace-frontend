@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../shared/lib/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 import "./Home.css";
+
 import logo from "../../assets/logos/logo.png";
 import slogan from "../../assets/logos/slogan.svg";
 import heroBg from "../../assets/backgrounds/hero-background.png";
@@ -27,11 +28,7 @@ export default function Home() {
 
   return (
     <div className="home">
-      {/* ===== HERO ===== */}
-      <header
-        className="homeHero"
-        style={{ backgroundImage: `url(${heroBg})` }}
-      >
+      <header className="homeHero" style={{ backgroundImage: `url(${heroBg})` }}>
         <div className="homeHeroInner">
           <img className="slogan" src={slogan} alt="Sort smart. Share easily" />
           <img className="homeHeroLogo" src={logo} alt="EstateSpace" />
@@ -47,7 +44,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ===== HOW IT WORKS ===== */}
       <section className="homeSection homeHow">
         <div className="homeContainer">
           <h2 className="homeH2">Hur det funkar</h2>
@@ -55,63 +51,61 @@ export default function Home() {
           <ol className="howSteps">
             <li className="howStep">
               <div className="howIcon howIcon--img" aria-hidden="true">
-                <img src={storage} alt="" />
+                <img src={storage} alt="Ritad bild på en stökig garderob" />
               </div>
               <p className="howText">
                 <span className="howNr">1.</span> Lokalisera vad du vill rensa
               </p>
               <p className="howStep-desc">
-                Ta fram saker från vinden, förrådet eller dödsboet som du vill strukturera.
+                Ta fram saker från vinden, förrådet eller dödsboet som du vill
+                strukturera.
               </p>
             </li>
 
             <li className="howStep">
               <div className="howIcon howIcon--img" aria-hidden="true">
-                <img src={camera} alt="" />
+                <img src={camera} alt="Ritad bild på en kamera" />
               </div>
               <p className="howText">
                 <span className="howNr">2.</span> Fota föremålet
               </p>
-                    <p className="howStep-desc">
-                Fotografera föremålet direkt med mobilen (om du inte redan har ett foto som du vill använda).
+              <p className="howStep-desc">
+                Fotografera föremålet direkt med mobilen (om du inte redan har
+                ett foto som du vill använda).
               </p>
             </li>
 
             <li className="howStep">
               <div className="howIcon howIcon--img" aria-hidden="true">
-                <img src={ipad} alt="" />
+                <img src={ipad} alt="Fotografi på en ipad med EstateSpace" />
               </div>
               <p className="howText">
-                <span className="howNr">3.</span> Lägg upp i EstateSpace
+                <span className="howNr">3.</span> Lägg till i EstateSpace
               </p>
-                           <p className="howStep-desc">
-                Skapa ett Space på EstateSpace, ladda sedan upp bilden och en titel. Välj status "donera", "slänga", "spara" eller "osorterad". 
+              <p className="howStep-desc">
+                Skapa ett Space på EstateSpace, ladda sedan upp bilden och en
+                titel. Välj status "donera", "slänga", "spara" eller "osorterad".
               </p>
             </li>
           </ol>
         </div>
       </section>
 
-      {/* ===== SHARE ===== */}
-<section className="homeSection homeShare">
-  <div className="homeContainer">
-    <div className="shareRow">
-      <div className="shareCopy">
-        <h2 className="homeH2 shareTitle">Dela ditt Space</h2>
-        <p className="shareDesc">
-          Du kan även dela ditt Space med vänner och familj för att se om någon
-          är intresserad av att ärva dina gamla saker.
-        </p>
-      </div>
+      <section className="homeSection homeShare">
+        <div className="homeContainer">
+          <div className="shareRow">
+            <div className="shareCopy">
+              <h2 className="homeH2 shareTitle">Dela ditt Space</h2>
+              <p className="shareDesc">
+                Du kan även dela ditt Space med vänner och familj för att se om
+                någon är intresserad av att ärva dina gamla saker.
+              </p>
+            </div>
+            <img className="shareImg" src={interested} alt="Bild på en väska och tecknat finger trycker Intresserad" loading="lazy" />
+          </div>
+        </div>
+      </section>
 
-      <img className="shareImg" src={interested} alt="" loading="lazy" />
-    </div>
-  </div>
-</section>
-
-
-
-      {/* ===== CTA FOOTER ===== */}
       <footer className="homeFooter">
         <div className="homeFooterInner">
           <h2 className="homeH2 homeH2--footer">Redo att komma igång?</h2>

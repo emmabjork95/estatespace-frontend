@@ -1,5 +1,3 @@
-
-
 .error-message {
   margin: 4px 0 0;
   padding: 10px 12px;
@@ -27,23 +25,18 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-
   padding: 22px;
 }
 
-
-/* STYLING*/
 .page {
-min-height: 100vh;
-    width: 100%;
-    display: grid;
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
   place-items: center;
   padding: 28px 16px;
   background: transparent;
 }
 
-
-/* ALERTS */
 .Alert {
   margin-top: 16px;
   padding: 12px;

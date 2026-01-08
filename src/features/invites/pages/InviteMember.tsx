@@ -7,7 +7,7 @@ type Props = {
   spacesID: string;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, "");
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export function InviteMember({ spacesID }: Props) {
   const [email, setEmail] = useState("");
@@ -21,8 +21,7 @@ export function InviteMember({ spacesID }: Props) {
   };
 
   const handleInvite = async () => {
-    setErrorMessage(null);
-    setSuccess(false);
+    clearAlerts();
     setLoading(true);
 
     const cleanEmail = email.trim().toLowerCase();
@@ -54,15 +53,12 @@ export function InviteMember({ spacesID }: Props) {
 
       const text = await res.text();
 
-      let data: any = null;
+      let data: any;
       try {
         data = JSON.parse(text);
       } catch {
         throw new Error(
-          `Ej JSON från API. Status ${res.status}. Body börjar: ${text.slice(
-            0,
-            80
-          )}`
+          `Ej JSON från API. Status ${res.status}. Body börjar: ${text.slice(0, 80)}`
         );
       }
 
@@ -83,12 +79,8 @@ export function InviteMember({ spacesID }: Props) {
   return (
     <section className="inviteMember">
       {(errorMessage || success) && (
-        <div
-          className={`Alert ${
-            errorMessage ? "Alert--error" : "Alert--success"
-          }`}
-        >
-          <span>{errorMessage ?? "Inbjudan skickad "}</span>
+        <div className={`Alert ${errorMessage ? "Alert--error" : "Alert--success"}`}>
+          <span>{errorMessage ?? "Inbjudan skickad"}</span>
           <button
             type="button"
             className="AlertClose"

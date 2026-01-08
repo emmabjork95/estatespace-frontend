@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../../../shared/lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import { type ItemListItem } from "../../items/ItemsTypes";
 import { type Space } from "../SpacesTypes";
 import "../styles/SpaceView.css";
@@ -27,6 +27,11 @@ const SpaceView = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
+  const resetFilters = () => {
+    setStatusFilter("all");
+    setCategoryFilter("all");
+  };
+
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
       const statusOk = statusFilter === "all" || item.status === statusFilter;
@@ -47,14 +52,11 @@ const SpaceView = () => {
 
   useEffect(() => {
     const fetchSpaceAndItems = async () => {
-      setErrorMessage(null);
       setLoading(true);
-
+      setErrorMessage(null);
       setOwnerName(null);
       setOwnerEmail(null);
-
-      setStatusFilter("all");
-      setCategoryFilter("all");
+      resetFilters();
 
       if (!spacesID) {
         setLoading(false);
@@ -87,6 +89,8 @@ const SpaceView = () => {
         return;
       }
 
+      setSpace(spaceData);
+
       const { data: ownerProfile, error: ownerError } = await supabase
         .from("profiles")
         .select("name, email")
@@ -96,9 +100,6 @@ const SpaceView = () => {
       if (!ownerError && ownerProfile) {
         setOwnerName(ownerProfile.name ?? null);
         setOwnerEmail(ownerProfile.email ?? null);
-      } else {
-        setOwnerName(null);
-        setOwnerEmail(null);
       }
 
       const { data: itemsData, error: itemsError } = await supabase
@@ -114,7 +115,6 @@ const SpaceView = () => {
         return;
       }
 
-      setSpace(spaceData);
       setItems((itemsData ?? []) as ItemWithCategory[]);
     };
 
@@ -190,7 +190,7 @@ const SpaceView = () => {
             {space.description && (
               <p className="space-description">{space.description}</p>
             )}
-            
+
             <div className="space-heroActions">
               {!isOwner && (
                 <button
@@ -204,33 +204,31 @@ const SpaceView = () => {
               )}
 
               {isOwner && (
-                <button
-                  className="btn btn-ghost"
-                  type="button"
-                  onClick={() => navigate(`/spaces/${space.spaces_id}/members`)}
-                >
-                  Medlemmar
-                </button>
-              )}
+                <>
+                  <button
+                    className="btn btn-ghost"
+                    type="button"
+                    onClick={() => navigate(`/spaces/${space.spaces_id}/members`)}
+                  >
+                    Medlemmar
+                  </button>
 
-              {isOwner && (
-                <button
-                  className="btn btn-ghost"
-                  type="button"
-                  onClick={() => navigate(`/spaces/${space.spaces_id}/edit`)}
-                >
-                  Redigera Space
-                </button>
-              )}
+                  <button
+                    className="btn btn-ghost"
+                    type="button"
+                    onClick={() => navigate(`/spaces/${space.spaces_id}/edit`)}
+                  >
+                    Redigera Space
+                  </button>
 
-              {isOwner && (
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
-                >
-                  + Lägg till föremål
-                </button>
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={() => navigate(`/spaces/${space.spaces_id}/items/new`)}
+                  >
+                    + Lägg till föremål
+                  </button>
+                </>
               )}
             </div>
 
@@ -277,14 +275,7 @@ const SpaceView = () => {
 
               <label className="space-filter space-filter--button">
                 <span>&nbsp;</span>
-                <button
-                  className="btn btn-ghost"
-                  type="button"
-                  onClick={() => {
-                    setStatusFilter("all");
-                    setCategoryFilter("all");
-                  }}
-                >
+                <button className="btn btn-ghost" type="button" onClick={resetFilters}>
                   Rensa
                 </button>
               </label>
@@ -312,43 +303,37 @@ const SpaceView = () => {
                     </button>
                   </>
                 ) : (
-                  <p>
-                    {ownerName ?? "Ägaren"} har inte lagt till några föremål ännu.
-                  </p>
+                  <p>{ownerName ?? "Ägaren"} har inte lagt till några föremål ännu.</p>
                 )}
               </div>
+            ) : filteredItems.length === 0 ? (
+              <div className="empty-state">
+                <h3>Inga träffar</h3>
+                <p>Testa att ändra filter eller klicka på “Rensa”.</p>
+              </div>
             ) : (
-              <>
-                {filteredItems.length === 0 ? (
-                  <div className="empty-state">
-                    <h3>Inga träffar</h3>
-                    <p>Testa att ändra filter eller klicka på “Rensa”.</p>
-                  </div>
-                ) : (
-                  <div className="items-grid" aria-label="Items">
-                    {filteredItems.map((item) => (
-                      <button
-                        key={item.items_id}
-                        type="button"
-                        className="item-card"
-                        onClick={() => navigate(`/items/${item.items_id}`)}
-                      >
-                        <div className="item-thumb">
-                          {item.image_url ? (
-                            <img src={item.image_url} alt={item.name} />
-                          ) : (
-                            <div className="item-thumbPlaceholder" />
-                          )}
-                        </div>
+              <div className="items-grid" aria-label="Items">
+                {filteredItems.map((item) => (
+                  <button
+                    key={item.items_id}
+                    type="button"
+                    className="item-card"
+                    onClick={() => navigate(`/items/${item.items_id}`)}
+                  >
+                    <div className="item-thumb">
+                      {item.image_url ? (
+                        <img src={item.image_url} alt={item.name} />
+                      ) : (
+                        <div className="item-thumbPlaceholder" />
+                      )}
+                    </div>
 
-                        <div className="item-meta">
-                          <div className="item-name">{item.name}</div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
+                    <div className="item-meta">
+                      <div className="item-name">{item.name}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             )}
           </section>
         </>

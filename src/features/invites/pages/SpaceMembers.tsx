@@ -40,14 +40,13 @@ const SpaceMembers = () => {
 
   const ownerId = space?.profiles_id ?? null;
 
-  const owners = useMemo(
-    () => members.filter((m) => m.profiles_id === ownerId),
-    [members, ownerId]
-  );
-  const nonOwners = useMemo(
-    () => members.filter((m) => m.profiles_id !== ownerId),
-    [members, ownerId]
-  );
+  const owners = useMemo(() => {
+    return members.filter((m) => m.profiles_id === ownerId);
+  }, [members, ownerId]);
+
+  const nonOwners = useMemo(() => {
+    return members.filter((m) => m.profiles_id !== ownerId);
+  }, [members, ownerId]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -139,7 +138,6 @@ const SpaceMembers = () => {
 
   useEffect(() => {
     fetchAll();
-
   }, [spacesID]);
 
   const handleRemove = async (memberProfileId: string) => {
@@ -200,14 +198,8 @@ const SpaceMembers = () => {
         )}
 
         {(errorMessage || loading) && (
-          <div
-            className={`Alert ${
-              errorMessage ? "Alert--error" : "Alert--info"
-            }`}
-          >
-            <span className="AlertText">
-              {errorMessage ?? "Laddar…"}
-            </span>
+          <div className={`Alert ${errorMessage ? "Alert--error" : "Alert--info"}`}>
+            <span className="AlertText">{errorMessage ?? "Laddar…"}</span>
             {errorMessage && (
               <button
                 className="AlertClose"
@@ -244,8 +236,8 @@ const SpaceMembers = () => {
           <div className="spaceMembersSectionHeader">
             <h3>Medlemmar</h3>
             <p>
-              {members.length} st{" "}
-              {members.length === 1 ? "medlem" : "medlemmar"} i detta space.
+              {members.length} st {members.length === 1 ? "medlem" : "medlemmar"} i detta
+              space.
             </p>
           </div>
 
@@ -255,7 +247,6 @@ const SpaceMembers = () => {
                 <p className="spaceMembersEmpty">Inga medlemmar hittades.</p>
               ) : (
                 <ul className="spaceMembersList">
-             
                   {owners.map((m) => (
                     <li key={m.profiles_id} className="spaceMembersRow">
                       <div className="spaceMembersRowLeft">
@@ -266,10 +257,7 @@ const SpaceMembers = () => {
                           <span className="spaceMembersBadge">Ägare</span>
                         </div>
 
-                        <div className="spaceMembersMeta">
-                          {m.email ?? "Ingen e-post"}
-              
-                        </div>
+                        <div className="spaceMembersMeta">{m.email ?? "Ingen e-post"}</div>
                       </div>
 
                       <button
@@ -283,7 +271,6 @@ const SpaceMembers = () => {
                     </li>
                   ))}
 
- 
                   {nonOwners.map((m) => (
                     <li key={m.profiles_id} className="spaceMembersRow">
                       <div className="spaceMembersRowLeft">
@@ -298,9 +285,7 @@ const SpaceMembers = () => {
                           )}
                         </div>
 
-                        <div className="spaceMembersMeta">
-                          {m.email ?? "Ingen e-post"}
-                        </div>
+                        <div className="spaceMembersMeta">{m.email ?? "Ingen e-post"}</div>
                       </div>
 
                       <button

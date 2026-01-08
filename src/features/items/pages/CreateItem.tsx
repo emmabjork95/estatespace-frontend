@@ -1,7 +1,7 @@
 import { type FormEvent, useRef, useState } from "react";
-import { supabase } from "../../../shared/lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
-import { STATUS_OPTIONS, STATUS_LABELS, type Status } from "../ItemsTypes";
+import { supabase } from "../../../shared/lib/supabaseClient";
+import { STATUS_LABELS, STATUS_OPTIONS, type Status } from "../ItemsTypes";
 import "../styles/CreateItem.css";
 import "../../../shared/components/ui/Buttons.css";
 
@@ -21,9 +21,7 @@ const CreateItem = () => {
 
   const removeSelectedFile = () => {
     setFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    fileInputRef.current && (fileInputRef.current.value = "");
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -95,9 +93,8 @@ const CreateItem = () => {
       return;
     }
 
-    if (data) {
+    if (data) 
       navigate(`/spaces/${spacesID}`);
-    }
   };
 
   return (
@@ -121,7 +118,7 @@ const CreateItem = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="createItemForm">
+        <form className="createItemForm" onSubmit={handleSubmit}>
           <label className="createItemField">
             <span>Namn på föremål</span>
             <input

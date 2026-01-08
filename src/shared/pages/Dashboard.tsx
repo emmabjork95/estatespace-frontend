@@ -11,11 +11,11 @@ type SpaceCardBase = {
 };
 
 type SpaceCard = SpaceCardBase & {
-  coverImages: string[]; 
+  coverImages: string[];
   kind: "owned" | "joined";
-  ownerId?: string; 
-  ownerName?: string | null; 
-  ownerEmail?: string | null; 
+  ownerId?: string;
+  ownerName?: string | null;
+  ownerEmail?: string | null;
 };
 
 type OwnerProfileRow = {
@@ -83,7 +83,6 @@ const Dashboard = () => {
       setLoading(true);
       setErrorMessage(null);
 
-
       const {
         data: { user },
         error: authError,
@@ -101,7 +100,7 @@ const Dashboard = () => {
         .eq("profiles_id", user.id)
         .single();
 
-      setUserName(profile?.name ?? "vän");
+      setUserName(profile?.name ?? ".");
 
       const { data: ownedSpaces, error: ownedError } = await supabase
         .from("spaces")
@@ -115,11 +114,13 @@ const Dashboard = () => {
         return;
       }
 
-      const ownedBase: SpaceCard[] = (ownedSpaces ?? []).map((s: SpaceCardBase) => ({
-        ...s,
-        coverImages: [],
-        kind: "owned",
-      }));
+      const ownedBase: SpaceCard[] = (ownedSpaces ?? []).map(
+        (s: SpaceCardBase) => ({
+          ...s,
+          coverImages: [],
+          kind: "owned",
+        })
+      );
 
       const { data: memberRows, error: memberError } = await supabase
         .from("space_members")
@@ -171,7 +172,9 @@ const Dashboard = () => {
 
         if (!ownersError && owners) {
           const ownerMap = new Map<string, OwnerProfileRow>();
-          (owners as OwnerProfileRow[]).forEach((o) => ownerMap.set(o.profiles_id, o));
+          (owners as OwnerProfileRow[]).forEach((o) =>
+            ownerMap.set(o.profiles_id, o)
+          );
 
           joinedBase = joinedBase.map((s) => {
             const owner = s.ownerId ? ownerMap.get(s.ownerId) : undefined;
@@ -202,72 +205,37 @@ const Dashboard = () => {
   if (errorMessage) return <p className="error-message">{errorMessage}</p>;
 
   return (
-  <div className="p-layout">
-    <header className="dash-header">
-      <div>
-        <h1 className="dash-title">Välkommen, {userName}</h1>
-      </div>
-
-      <button
-        className="btn btn-primary"
-        type="button"
-        onClick={() => navigate("/spaces/new")}
-      >
-        + Nytt space
-      </button>
-    </header>
-
-    <main className="p-main">
-      <div className="p-searchRow">
-        <div className="p-search">
-          <input
-            className="p-searchInput"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Sök bland dina spaces"
-            aria-label="Sök bland dina spaces"
-          />
+    <div className="p-layout">
+      <header className="dash-header">
+        <div>
+          <h1 className="dash-title">Välkommen, {userName}</h1>
         </div>
-      </div>
 
-      <h2 className="p-title-owned">Mina Spaces</h2>
-      <section className="p-boardGrid" aria-label="Spaces">
-        {filteredMySpaces.map((space) => (
-          <button
-            key={space.spaces_id}
-            className="p-boardCard"
-            type="button"
-            onClick={() => navigate(`/spaces/${space.spaces_id}`)}
-          >
-            <div className="p-cover">
-              <div className="p-coverBig">
-                {space.coverImages[0] ? <img src={space.coverImages[0]} alt="" /> : <div className="placeholder" />}
-              </div>
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={() => navigate("/spaces/new")}
+        >
+          + Nytt space
+        </button>
+      </header>
 
-              <div className="p-coverSmallCol">
-                <div className="p-coverSmall">
-                  {space.coverImages[1] ? <img src={space.coverImages[1]} alt="" /> : <div className="placeholder" />}
-                </div>
-                <div className="p-coverSmall">
-                  {space.coverImages[2] ? <img src={space.coverImages[2]} alt="" /> : <div className="placeholder" />}
-                </div>
-              </div>
-            </div>
-
-            <div className="p-boardName">{space.name}</div>
-          </button>
-        ))}
-      </section>
-
-      <h2 className="p-title">Delade Space</h2>
-      <section className="p-boardGrid" aria-label="Delade spaces">
-        {filteredJoinedSpaces.length === 0 ? (
-          <div className="empty-state">
-            <h3>Inga delade spaces ännu</h3>
-            <p>När du accepterar en inbjudan dyker spacet upp här.</p>
+      <main className="p-main">
+        <div className="p-searchRow">
+          <div className="p-search">
+            <input
+              className="p-searchInput"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Sök bland dina spaces"
+              aria-label="Sök bland dina spaces"
+            />
           </div>
-        ) : (
-          filteredJoinedSpaces.map((space) => (
+        </div>
+
+        <h2 className="p-title-owned">Mina Spaces</h2>
+        <section className="p-boardGrid" aria-label="Spaces">
+          {filteredMySpaces.map((space) => (
             <button
               key={space.spaces_id}
               className="p-boardCard"
@@ -276,31 +244,90 @@ const Dashboard = () => {
             >
               <div className="p-cover">
                 <div className="p-coverBig">
-                  {space.coverImages[0] ? <img src={space.coverImages[0]} alt="" /> : <div className="placeholder" />}
+                  {space.coverImages[0] ? (
+                    <img src={space.coverImages[0]} alt="" />
+                  ) : (
+                    <div className="placeholder" />
+                  )}
                 </div>
 
                 <div className="p-coverSmallCol">
                   <div className="p-coverSmall">
-                    {space.coverImages[1] ? <img src={space.coverImages[1]} alt="" /> : <div className="placeholder" />}
+                    {space.coverImages[1] ? (
+                      <img src={space.coverImages[1]} alt="" />
+                    ) : (
+                      <div className="placeholder" />
+                    )}
                   </div>
                   <div className="p-coverSmall">
-                    {space.coverImages[2] ? <img src={space.coverImages[2]} alt="" /> : <div className="placeholder" />}
+                    {space.coverImages[2] ? (
+                      <img src={space.coverImages[2]} alt="" />
+                    ) : (
+                      <div className="placeholder" />
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className="p-boardName">{space.name}</div>
-              <div className="p-boardMeta">
-                Ägare: <strong>{space.ownerName ?? space.ownerEmail ?? "Okänd"}</strong>
-              </div>
             </button>
-          ))
-        )}
-      </section>
-    </main>
-  </div>
-);
+          ))}
+        </section>
 
+        <h2 className="p-title">Delade Space</h2>
+        <section className="p-boardGrid" aria-label="Delade spaces">
+          {filteredJoinedSpaces.length === 0 ? (
+            <div className="empty-state">
+              <h3>Inga delade spaces ännu</h3>
+              <p>När du accepterar en inbjudan dyker spacet upp här.</p>
+            </div>
+          ) : (
+            filteredJoinedSpaces.map((space) => (
+              <button
+                key={space.spaces_id}
+                className="p-boardCard"
+                type="button"
+                onClick={() => navigate(`/spaces/${space.spaces_id}`)}
+              >
+                <div className="p-cover">
+                  <div className="p-coverBig">
+                    {space.coverImages[0] ? (
+                      <img src={space.coverImages[0]} alt="" />
+                    ) : (
+                      <div className="placeholder" />
+                    )}
+                  </div>
+
+                  <div className="p-coverSmallCol">
+                    <div className="p-coverSmall">
+                      {space.coverImages[1] ? (
+                        <img src={space.coverImages[1]} alt="" />
+                      ) : (
+                        <div className="placeholder" />
+                      )}
+                    </div>
+                    <div className="p-coverSmall">
+                      {space.coverImages[2] ? (
+                        <img src={space.coverImages[2]} alt="" />
+                      ) : (
+                        <div className="placeholder" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-boardName">{space.name}</div>
+                <div className="p-boardMeta">
+                  Ägare:{" "}
+                  <strong>{space.ownerName ?? space.ownerEmail ?? "Okänd"}</strong>
+                </div>
+              </button>
+            ))
+          )}
+        </section>
+      </main>
+    </div>
+  );
 };
 
 export default Dashboard;

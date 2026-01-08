@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { supabase } from "../../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient";
 import "../ui/Buttons.css";
 
 type NotificationRow = {
@@ -13,20 +13,6 @@ type NotificationRow = {
   items_id: string | null;
 };
 
-function timeAgo(dateIso: string) {
-  const d = new Date(dateIso).getTime();
-  const now = Date.now();
-  const diff = Math.max(0, now - d);
-
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "nyss";
-  if (mins < 60) return `${mins} min`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} h`;
-  const days = Math.floor(hrs / 24);
-  return `${days} d`;
-}
-
 type NotificationsBellProps = {
   children: (args: {
     unreadCount: number;
@@ -35,8 +21,24 @@ type NotificationsBellProps = {
   }) => ReactNode;
 };
 
+function timeAgo(dateIso: string) {
+  const dateMs = new Date(dateIso).getTime();
+  const diffMs = Math.max(0, Date.now() - dateMs);
+
+  const mins = Math.floor(diffMs / 60_000);
+  if (mins < 1) return "nyss";
+  if (mins < 60) return `${mins} min`;
+
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} h`;
+
+  const days = Math.floor(hrs / 24);
+  return `${days} d`;
+}
+
 export function NotificationsBell({ children }: NotificationsBellProps) {
   const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<NotificationRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -45,10 +47,9 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const initRanRef = useRef(false);
 
-  const unreadCount = useMemo(
-    () => rows.filter((r) => !r.is_read).length,
-    [rows]
-  );
+  const unreadCount = useMemo(() => {
+    return rows.filter((r) => !r.is_read).length;
+  }, [rows]);
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -58,13 +59,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       error: userErr,
     } = await supabase.auth.getUser();
 
-    if (userErr) {
-      setRows([]);
-      setLoading(false);
-      return;
-    }
-
-    if (!user) {
+    if (userErr || !user) {
       setUserId(null);
       setRows([]);
       setLoading(false);
@@ -91,7 +86,9 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
 
   const markOneAsRead = async (id: string) => {
     setRows((prev) =>
-      prev.map((r) => (r.notifications_id === id ? { ...r, is_read: true } : r))
+      prev.map((r) =>
+        r.notifications_id === id ? { ...r, is_read: true } : r
+      )
     );
 
     const { error } = await supabase
@@ -117,7 +114,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
   };
 
   const deleteOne = async (id: string) => {
-    const prev = rows;
+    const prevRows = rows;
 
     setRows((curr) => curr.filter((r) => r.notifications_id !== id));
 
@@ -127,13 +124,15 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       .eq("notifications_id", id);
 
     if (error) {
-      setRows(prev);
+      setRows(prevRows);
       fetchNotifications();
     }
   };
 
   const goToFromNotification = async (n: NotificationRow) => {
-    if (!n.is_read) await markOneAsRead(n.notifications_id);
+    if (!n.is_read) {
+      await markOneAsRead(n.notifications_id);
+    }
 
     if (n.items_id) {
       navigate(`/items/${n.items_id}`);
@@ -197,6 +196,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       const target = e.target as HTMLElement;
       if (!target.closest(".notif-wrap")) setOpen(false);
     };
+
     window.addEventListener("click", onClick);
     return () => window.removeEventListener("click", onClick);
   }, []);
@@ -214,6 +214,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
         <div className="notif-dropdown" onClick={(e) => e.stopPropagation()}>
           <div className="notif-header">
             <strong>Notiser</strong>
+
             <button
               type="button"
               className="notif-markall"
@@ -249,20 +250,19 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
                       <small>{timeAgo(n.created_at)}</small>
                     </div>
                   </button>
-                  
-                    <button
-                      type="button"
-                      className="notif-deletebtn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteOne(n.notifications_id);
-                      }}
-                      title="Ta bort notis"
-                      aria-label="Ta bort notis"
-                    >
-                      X
-                    </button>
-               
+
+                  <button
+                    type="button"
+                    className="notif-deletebtn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteOne(n.notifications_id);
+                    }}
+                    title="Ta bort notis"
+                    aria-label="Ta bort notis"
+                  >
+                    X
+                  </button>
                 </li>
               ))}
             </ul>

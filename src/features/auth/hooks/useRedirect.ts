@@ -1,15 +1,11 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
-export function useRedirect(fallback: string = "/dashboard") {
-  const location = useLocation();
+export function useRedirect(fallback = "/dashboard") {
+  const { search } = useLocation();
 
   return useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    const r = params.get("redirect");
-
-    if (r && r.startsWith("/")) return r;
-
-    return fallback;
-  }, [location.search, fallback]);
+    const redirect = new URLSearchParams(search).get("redirect");
+    return redirect?.startsWith("/") ? redirect : fallback;
+  }, [search, fallback]);
 }

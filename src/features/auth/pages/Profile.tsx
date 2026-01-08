@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabaseClient";
 import "../styles/Profile.css";
@@ -19,6 +19,11 @@ export function Profile() {
   const [message, setMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const clearAlerts = () => {
+    setMessage(null);
+    setErrorMessage(null);
+  };
+
   const canSaveName = useMemo(() => {
     const trimmed = name.trim();
     return trimmed.length > 0 && trimmed !== initialName.trim() && !savingName;
@@ -27,8 +32,7 @@ export function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      setMessage(null);
-      setErrorMessage(null);
+      clearAlerts();
 
       const {
         data: { user },
@@ -64,11 +68,6 @@ export function Profile() {
 
     fetchProfile();
   }, []);
-
-  const clearAlerts = () => {
-    setMessage(null);
-    setErrorMessage(null);
-  };
 
   const handleUpdateName = async (e: FormEvent) => {
     e.preventDefault();
@@ -156,34 +155,20 @@ export function Profile() {
     <div className="profilePage">
       <div className="profileCard">
         <div className="profileTopRow">
-          <button
-            className="btn btn-ghost"
-            type="button"
-            onClick={() => navigate(-1)}
-          >
+          <button className="btn btn-ghost" type="button" onClick={() => navigate(-1)}>
             Tillbaka
           </button>
         </div>
 
         <div className="profileHeader">
           <h2>Profilinställningar</h2>
-          <p className="profileSub">
-            Uppdatera namn och lösenord för ditt konto.
-          </p>
+          <p className="profileSub">Uppdatera namn och lösenord för ditt konto.</p>
         </div>
 
         {(errorMessage || message) && (
-          <div
-            className={`Alert ${
-              errorMessage ? "Alert--error" : "Alert--success"
-            }`}
-          >
+          <div className={`Alert ${errorMessage ? "Alert--error" : "Alert--success"}`}>
             <span>{errorMessage ?? message}</span>
-            <button
-              className="AlertClose"
-              onClick={clearAlerts}
-              type="button"
-            >
+            <button className="AlertClose" onClick={clearAlerts} type="button">
               ✕
             </button>
           </div>
@@ -196,8 +181,7 @@ export function Profile() {
 
         <div className="profileDivider" />
 
-        {/* Ändra namn */}
-        <form onSubmit={handleUpdateName} className="profileSection">
+        <form className="profileSection" onSubmit={handleUpdateName}>
           <div className="profileSectionHeader">
             <h3>Ändra namn</h3>
             <p>Ditt namn visas i appen.</p>
@@ -211,15 +195,12 @@ export function Profile() {
               onChange={(e) => setName(e.target.value)}
               onFocus={clearAlerts}
               required
+              disabled={savingName || savingPassword}
             />
           </label>
 
           <div className="profileActions">
-            <button
-              className="btn btn-primary"
-              type="submit"
-              disabled={!canSaveName}
-            >
+            <button className="btn btn-primary" type="submit" disabled={!canSaveName}>
               {savingName ? "Sparar…" : "Spara namn"}
             </button>
           </div>
@@ -227,8 +208,7 @@ export function Profile() {
 
         <div className="profileDivider" />
 
-        {/* Ändra lösenord */}
-        <form onSubmit={handleUpdatePassword} className="profileSection">
+        <form className="profileSection" onSubmit={handleUpdatePassword}>
           <div className="profileSectionHeader">
             <h3>Ändra lösenord</h3>
             <p>Minst 6 tecken.</p>
@@ -245,15 +225,12 @@ export function Profile() {
               onFocus={clearAlerts}
               required
               autoComplete="new-password"
+              disabled={savingPassword || savingName}
             />
           </label>
 
           <div className="profileActions">
-            <button
-              className="btn btn-primary"
-              type="submit"
-              disabled={savingPassword}
-            >
+            <button className="btn btn-primary" type="submit" disabled={savingPassword}>
               {savingPassword ? "Sparar…" : "Spara lösenord"}
             </button>
           </div>

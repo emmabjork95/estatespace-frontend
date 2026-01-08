@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../../../shared/lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import "../styles/ItemDetail.css";
 import "../../../shared/components/ui/Buttons.css";
-import { STATUS_LABELS, type Item, type Status } from "../ItemsTypes";
+import { STATUS_LABELS, type Item } from "../ItemsTypes";
 
+type InterestValue = "interested" | "declined";
 
 type InterestRow = {
   profiles_id: string;
-  interest: "interested" | "declined";
+  interest: InterestValue;
 };
 
 type ProfileRow = {
@@ -19,7 +20,7 @@ type ProfileRow = {
 
 type InterestUI = {
   profiles_id: string;
-  interest: "interested" | "declined";
+  interest: InterestValue;
   name: string | null;
   email: string | null;
 };
@@ -27,24 +28,20 @@ type InterestUI = {
 const ItemDetail = () => {
   const navigate = useNavigate();
   const { itemsID } = useParams();
+
   const [item, setItem] = useState<Item | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isMember, setIsMember] = useState(false);
 
   const [interestList, setInterestList] = useState<InterestUI[]>([]);
-  const [myInterest, setMyInterest] = useState<
-    "interested" | "declined" | null
-  >(null);
+  const [myInterest, setMyInterest] = useState<InterestValue | null>(null);
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  const isItemOwner = useMemo(() => {
-    return !!currentUserId && !!item && currentUserId === item.profiles_id;
-  }, [currentUserId, item]);
-
-  const formatName = (x: InterestUI) => x.name ?? x.email ?? "Okänd";
+  const isItemOwner = !!currentUserId && !!item && currentUserId === item.profiles_id;
 
   const interested = useMemo(
     () => interestList.filter((x) => x.interest === "interested"),
@@ -56,120 +53,116 @@ const ItemDetail = () => {
     [interestList]
   );
 
+  const formatName = (x: InterestUI) => x.name ?? x.email ?? "Okänd";
+
   const fetchAll = async () => {
     setErrorMessage(null);
     setLoading(true);
 
-    if (!itemsID) {
+    try {
+      if (!itemsID) {
+        setErrorMessage("Saknar item-id i URL:en.");
+        return;
+      }
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setErrorMessage("Du måste vara inloggad för att se detta item.");
+        return;
+      }
+
+      setCurrentUserId(user.id);
+
+      const { data: itemData, error: itemError } = await supabase
+        .from("items")
+        .select(
+          "items_id, spaces_id, profiles_id, name, description, status, category, image_url, created_at"
+        )
+        .eq("items_id", itemsID)
+        .single();
+
+      if (itemError || !itemData) {
+        setErrorMessage(itemError?.message ?? "Kunde inte hämta item.");
+        return;
+      }
+
+      setItem(itemData);
+      setSelectedImage(itemData.image_url ?? null);
+
+      const { data: memberRow } = await supabase
+        .from("space_members")
+        .select("role")
+        .eq("spaces_id", itemData.spaces_id)
+        .eq("profiles_id", user.id)
+        .maybeSingle();
+
+      setIsMember((memberRow?.role ?? "").toLowerCase() === "member");
+
+      const { data: interestRows, error: interestError } = await supabase
+        .from("item_interests")
+        .select("profiles_id, interest")
+        .eq("items_id", itemsID);
+
+      if (interestError) {
+        setErrorMessage(interestError.message);
+        return;
+      }
+
+      const interestsRaw = (interestRows ?? []) as InterestRow[];
+
+      const mine = interestsRaw.find((r) => r.profiles_id === user.id);
+      setMyInterest(mine?.interest ?? null);
+
+      const ids = interestsRaw.map((r) => r.profiles_id);
+
+      if (ids.length === 0) {
+        setInterestList([]);
+        return;
+      }
+
+      const { data: profileRows, error: profileError } = await supabase
+        .from("profiles")
+        .select("profiles_id, name, email")
+        .in("profiles_id", ids);
+
+      if (profileError) {
+        setErrorMessage(profileError.message);
+        return;
+      }
+
+      const profiles = (profileRows ?? []) as ProfileRow[];
+      const profileMap = new Map<string, ProfileRow>();
+      profiles.forEach((p) => profileMap.set(p.profiles_id, p));
+
+      const ui: InterestUI[] = interestsRaw.map((r) => {
+        const p = profileMap.get(r.profiles_id);
+        return {
+          profiles_id: r.profiles_id,
+          interest: r.interest,
+          name: p?.name ?? null,
+          email: p?.email ?? null,
+        };
+      });
+
+      setInterestList(ui);
+    } finally {
       setLoading(false);
-      setErrorMessage("Saknar item-id i URL:en.");
-      return;
     }
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      setLoading(false);
-      setErrorMessage("Du måste vara inloggad för att se detta item.");
-      return;
-    }
-
-    setCurrentUserId(user.id);
-
-    const { data: itemData, error: itemError } = await supabase
-      .from("items")
-      .select(
-        "items_id, spaces_id, profiles_id, name, description, status, category, image_url, created_at"
-      )
-      .eq("items_id", itemsID)
-      .single();
-
-    if (itemError || !itemData) {
-      setLoading(false);
-      setErrorMessage(itemError?.message ?? "Kunde inte hämta item.");
-      return;
-    }
-
-    setItem(itemData);
-
-    setSelectedImage(itemData.image_url ?? null);
-
-    const { data: memberRow, error: memberError } = await supabase
-      .from("space_members")
-      .select("role")
-      .eq("spaces_id", itemData.spaces_id)
-      .eq("profiles_id", user.id)
-      .single();
-
-if (memberError || !memberRow) {
-  setIsMember(false);
-} else {
-  setIsMember((memberRow.role ?? "").toLowerCase() === "member");
-}
-
-    const { data: interestRows, error: interestError } = await supabase
-      .from("item_interests")
-      .select("profiles_id, interest")
-      .eq("items_id", itemsID);
-
-    if (interestError) {
-      setLoading(false);
-      setErrorMessage(interestError.message);
-      return;
-    }
-
-    const interestsRaw = (interestRows ?? []) as InterestRow[];
-
-    const mine = interestsRaw.find((r) => r.profiles_id === user.id);
-    setMyInterest(mine?.interest ?? null);
-
-    const ids = interestsRaw.map((r) => r.profiles_id);
-
-    if (ids.length === 0) {
-      setInterestList([]);
-      setLoading(false);
-      return;
-    }
-
-    const { data: profileRows, error: profileError } = await supabase
-      .from("profiles")
-      .select("profiles_id, name, email")
-      .in("profiles_id", ids);
-
-    if (profileError) {
-      setLoading(false);
-      setErrorMessage(profileError.message);
-      return;
-    }
-
-    const profiles = (profileRows ?? []) as ProfileRow[];
-
-    const ui: InterestUI[] = interestsRaw.map((r) => {
-      const p = profiles.find((x) => x.profiles_id === r.profiles_id);
-      return {
-        profiles_id: r.profiles_id,
-        interest: r.interest,
-        name: p?.name ?? null,
-        email: p?.email ?? null,
-      };
-    });
-
-    setInterestList(ui);
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchAll();
   }, [itemsID]);
 
-  const toggleInterest = async (interest: "interested" | "declined") => {
+  const toggleInterest = async (interest: InterestValue) => {
     if (!itemsID || !currentUserId) return;
 
-    setLoading(true);
     setErrorMessage(null);
+    setLoading(true);
 
     try {
       if (myInterest === interest) {
@@ -189,12 +182,10 @@ if (memberError || !memberRow) {
         return;
       }
 
-      const { error } = await supabase
-        .from("item_interests")
-        .upsert(
-          { items_id: itemsID, profiles_id: currentUserId, interest },
-          { onConflict: "items_id,profiles_id" }
-        );
+      const { error } = await supabase.from("item_interests").upsert(
+        { items_id: itemsID, profiles_id: currentUserId, interest },
+        { onConflict: "items_id,profiles_id" }
+      );
 
       if (error) {
         setErrorMessage(error.message);
@@ -208,10 +199,12 @@ if (memberError || !memberRow) {
     }
   };
 
+  const statusLabel =
+    item?.status ? (STATUS_LABELS as Record<string, string>)[item.status] ?? item.status : "";
+
   return (
     <div className="itemPage">
       <div className="itemCard">
-    
         <div className="itemTopRow">
           <button
             className="btn btn-ghost"
@@ -239,9 +232,7 @@ if (memberError || !memberRow) {
 
         {loading && <p className="itemLoading">Laddar...</p>}
 
-        {!loading && errorMessage && (
-          <p className="error-message">{errorMessage}</p>
-        )}
+        {!loading && errorMessage && <p className="error-message">{errorMessage}</p>}
 
         {!loading && !errorMessage && item && (
           <>
@@ -250,8 +241,7 @@ if (memberError || !memberRow) {
 
               <div className="itemPills">
                 <span className="itemPill">
-                 Status: <strong>{STATUS_LABELS[item.status as Status] ?? item.status}</strong>
-
+                  Status: <strong>{statusLabel}</strong>
                 </span>
 
                 {item.category && (
@@ -262,15 +252,15 @@ if (memberError || !memberRow) {
               </div>
             </div>
 
-<div className="itemMediaSingle">
-  <div className="itemMediaInner">
-    {selectedImage ? (
-      <img className="itemHeroImage" src={selectedImage} alt={item.name} />
-    ) : (
-      <div className="itemImagePlaceholder" aria-label="Ingen bild" />
-    )}
-  </div>
-</div>
+            <div className="itemMediaSingle">
+              <div className="itemMediaInner">
+                {selectedImage ? (
+                  <img className="itemHeroImage" src={selectedImage} alt={item.name} />
+                ) : (
+                  <div className="itemImagePlaceholder" aria-label="Ingen bild" />
+                )}
+              </div>
+            </div>
 
             {isMember && (
               <div className="itemInterestRow">
@@ -302,7 +292,6 @@ if (memberError || !memberRow) {
               </div>
             )}
 
-        
             {item.description && (
               <div className="itemSection">
                 <h3 className="itemSectionTitle">Beskrivning</h3>
@@ -315,13 +304,10 @@ if (memberError || !memberRow) {
 
               <div className="itemMarkRow">
                 <div className="itemMarkLabel">
-                  Intresserade{" "}
-                  <span className="itemMarkCount">({interested.length})</span>
+                  Intresserade <span className="itemMarkCount">({interested.length})</span>
                 </div>
                 <div className="itemMarkValue">
-                  {interested.length
-                    ? interested.map(formatName).join(", ")
-                    : "Inga ännu"}
+                  {interested.length ? interested.map(formatName).join(", ") : "Inga ännu"}
                 </div>
               </div>
 
@@ -330,9 +316,7 @@ if (memberError || !memberRow) {
                   Avstår <span className="itemMarkCount">({declined.length})</span>
                 </div>
                 <div className="itemMarkValue">
-                  {declined.length
-                    ? declined.map(formatName).join(", ")
-                    : "Inga ännu"}
+                  {declined.length ? declined.map(formatName).join(", ") : "Inga ännu"}
                 </div>
               </div>
             </div>
