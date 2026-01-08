@@ -3,40 +3,62 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import "./Navbar.css";
 import "../ui/Buttons.css";
+
 import logo from "../../../assets/logos/logo.png";
 import settingsIcon from "../../../assets/icons/settings.svg";
 import bellIcon from "../../../assets/icons/bell.svg";
 import homeIcon from "../../../assets/icons/home.png";
+
 import { NotificationsBell } from "../NotificationsBell/NotificationsBell";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const closeMenu = () => setMenuOpen(false);
+
   const handleLogout = async () => {
-    setMenuOpen(false);
+    closeMenu();
     navigate("/", { replace: true });
     await supabase.auth.signOut();
   };
 
-  // Stäng meny med ESC
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
+      if (e.key === "Escape") closeMenu();
     };
+
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  const NotifButton = ({
+    unreadCount,
+    open,
+    toggle,
+  }: {
+    unreadCount: number;
+    open: boolean;
+    toggle: () => void;
+  }) => (
+    <button
+      type="button"
+      className={`nav-icon-link notif-trigger ${open ? "active" : ""}`}
+      onClick={toggle}
+      aria-label="Notiser"
+      title="Notiser"
+    >
+      <img src={bellIcon} alt="Notissymbol" className="nav-icon" />
+      {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+    </button>
+  );
+
   return (
     <header className="site-header">
-      <nav className="navbar" onClick={() => setMenuOpen(false)}>
+      <nav className="navbar" onClick={closeMenu}>
         <div className="navbar-overlay" aria-hidden="true" />
-        <NavLink
-          to="/dashboard"
-          className="logo-link"
-          onClick={() => setMenuOpen(false)}
-        >
+
+        <NavLink to="/dashboard" className="logo-link" onClick={closeMenu}>
           <img src={logo} alt="EstateSpace logo" className="logo-img" />
         </NavLink>
 
@@ -45,18 +67,7 @@ export const Navbar = () => {
         <div className="nav-actions" onClick={(e) => e.stopPropagation()}>
           <NotificationsBell>
             {({ unreadCount, open, toggle }) => (
-              <button
-                type="button"
-                className={`nav-icon-link notif-trigger ${open ? "active" : ""}`}
-                onClick={toggle}
-                aria-label="Notiser"
-                title="Notiser"
-              >
-                <img src={bellIcon} alt="" className="nav-icon" />
-                {unreadCount > 0 && (
-                  <span className="notif-badge">{unreadCount}</span>
-                )}
-              </button>
+              <NotifButton unreadCount={unreadCount} open={open} toggle={toggle} />
             )}
           </NotificationsBell>
 
@@ -78,20 +89,7 @@ export const Navbar = () => {
           <li>
             <NotificationsBell>
               {({ unreadCount, open, toggle }) => (
-                <button
-                  type="button"
-                  className={`nav-icon-link notif-trigger ${
-                    open ? "active" : ""
-                  }`}
-                  onClick={toggle}
-                  aria-label="Notiser"
-                  title="Notiser"
-                >
-                  <img src={bellIcon} alt="" className="nav-icon" />
-                  {unreadCount > 0 && (
-                    <span className="notif-badge">{unreadCount}</span>
-                  )}
-                </button>
+                <NotifButton unreadCount={unreadCount} open={open} toggle={toggle} />
               )}
             </NotificationsBell>
           </li>
@@ -106,7 +104,7 @@ export const Navbar = () => {
                 isActive ? "nav-icon-link active" : "nav-icon-link"
               }
             >
-              <img src={homeIcon} alt="" className="nav-icon" />
+              <img src={homeIcon} alt="Hemsymbol" className="nav-icon" />
             </NavLink>
           </li>
 
@@ -119,22 +117,17 @@ export const Navbar = () => {
                 isActive ? "nav-icon-link active" : "nav-icon-link"
               }
             >
-              <img src={settingsIcon} alt="" className="nav-icon" />
+              <img src={settingsIcon} alt="Inställningssymbol" className="nav-icon" />
             </NavLink>
           </li>
 
           <li>
-            <button
-              className="btn btn-danger"
-              type="button"
-              onClick={handleLogout}
-            >
+            <button className="btn btn-danger" type="button" onClick={handleLogout}>
               Logga ut
             </button>
           </li>
         </ul>
 
-  
         {menuOpen && (
           <button
             type="button"
@@ -142,12 +135,11 @@ export const Navbar = () => {
             aria-label="Stäng meny"
             onClick={(e) => {
               e.stopPropagation();
-              setMenuOpen(false);
+              closeMenu();
             }}
           />
         )}
 
-  
         {menuOpen && (
           <div
             className="nav-mobileMenu"
@@ -159,7 +151,7 @@ export const Navbar = () => {
               className="CTA-btn"
               onClick={() => {
                 navigate("/dashboard");
-                setMenuOpen(false);
+                closeMenu();
               }}
             >
               Spaces
@@ -170,7 +162,7 @@ export const Navbar = () => {
               className="CTA-btn"
               onClick={() => {
                 navigate("/profile");
-                setMenuOpen(false);
+                closeMenu();
               }}
             >
               Profil

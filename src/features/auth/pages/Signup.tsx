@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabaseClient";
-import { useNavigate, Link } from "react-router-dom";
 import { useRedirect } from "../hooks/useRedirect";
 import "../styles/Signup.css";
 
@@ -23,9 +23,7 @@ export function Signup() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { name },
-      },
+      options: { data: { name } },
     });
 
     if (error) {
@@ -62,7 +60,7 @@ export function Signup() {
       <div className="signup-card">
         <h1 className="signup-title">Skapa konto</h1>
 
-        <form onSubmit={handleSignup} className="signup-form">
+        <form className="signup-form" onSubmit={handleSignup}>
           <div className="field">
             <label htmlFor="name">Namn</label>
             <input
@@ -72,6 +70,7 @@ export function Signup() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
+              disabled={loading}
             />
           </div>
 
@@ -84,6 +83,7 @@ export function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
+              disabled={loading}
             />
           </div>
 
@@ -96,12 +96,17 @@ export function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
+              disabled={loading}
             />
           </div>
 
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-          <button className="btn btn-primary loginPrimaryBtn" type="submit" disabled={loading}>
+          <button
+            className="btn btn-primary loginPrimaryBtn"
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Skapar..." : "Skapa konto"}
           </button>
         </form>

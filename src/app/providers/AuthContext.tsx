@@ -1,3 +1,4 @@
+import type { User } from "@supabase/supabase-js";
 import {
   createContext,
   useContext,
@@ -6,7 +7,6 @@ import {
   type ReactNode,
 } from "react";
 import { supabase } from "../../shared/lib/supabaseClient";
-import type { User } from "@supabase/supabase-js";
 
 type AuthContextType = {
   user: User | null;
@@ -27,32 +27,27 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
-    const getUser = async () => {
+    const init = async () => {
       const { data, error } = await supabase.auth.getUser();
-      if (!error) {
-        setUser(data.user ?? null);
-      }
+      if (!error) setUser(data.user ?? null);
       setLoading(false);
     };
 
-    getUser();
+    init();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>
   );
 };

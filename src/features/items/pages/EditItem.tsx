@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { supabase } from "../../../shared/lib/supabaseClient";
 import { useNavigate, useParams } from "react-router-dom";
-import { STATUS_OPTIONS, STATUS_LABELS, type Item, type Status } from "../ItemsTypes";
+import { supabase } from "../../../shared/lib/supabaseClient";
+import { STATUS_LABELS, STATUS_OPTIONS, type Item, type Status } from "../ItemsTypes";
 import "../styles/EditItem.css";
 import "../../../shared/components/ui/Buttons.css";
 
@@ -24,23 +24,24 @@ const EditItem = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const clearError = () => setErrorMessage(null);
+
   const removeSelectedFile = () => {
     setFile(null);
+
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
+
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const markRemoveExistingImage = () => {
-    const confirmed = window.confirm(
-    "Är du säker på att du vill ta bort bilden?"
-  );
+    const ok = window.confirm("Är du säker på att du vill ta bort bilden?");
+    if (!ok) return;
 
-  if (!confirmed) return;
-
-  setRemoveImage(true);
-  removeSelectedFile();
-};
+    setRemoveImage(true);
+    removeSelectedFile();
+  };
 
   const extractStoragePathFromPublicUrl = (publicUrl: string) => {
     const marker = "/storage/v1/object/public/item-images/";
@@ -57,62 +58,60 @@ const EditItem = () => {
 
   useEffect(() => {
     const fetchItem = async () => {
-      setErrorMessage(null);
+      clearError();
       setLoading(true);
 
-      if (!itemsID) {
+      try {
+        if (!itemsID) {
+          setErrorMessage("Saknar item-id i URL:en.");
+          return;
+        }
+
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+          setErrorMessage("Du måste vara inloggad.");
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("items")
+          .select(
+            "items_id, spaces_id, profiles_id, name, description, category, status, image_url"
+          )
+          .eq("items_id", itemsID)
+          .single();
+
+        if (error || !data) {
+          setErrorMessage(error?.message ?? "Kunde inte hämta item.");
+          return;
+        }
+
+        if (data.profiles_id !== user.id) {
+          setErrorMessage("Du har inte behörighet att redigera detta item.");
+          return;
+        }
+
+        setItem(data);
+        setName(data.name ?? "");
+        setDescription(data.description ?? "");
+        setCategory(data.category ?? "");
+
+        const nextStatus: Status =
+          STATUS_OPTIONS.includes(data.status as Status) ? (data.status as Status) : "Unsorted";
+        setStatus(nextStatus);
+
+        setRemoveImage(false);
+        removeSelectedFile();
+      } finally {
         setLoading(false);
-        setErrorMessage("Saknar item-id i URL:en.");
-        return;
       }
-
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        setLoading(false);
-        setErrorMessage("Du måste vara inloggad.");
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("items")
-        .select(
-          "items_id, spaces_id, profiles_id, name, description, category, status, image_url"
-        )
-        .eq("items_id", itemsID)
-        .single();
-
-      setLoading(false);
-
-      if (error) {
-        setErrorMessage(error.message);
-        return;
-      }
-
-      if (data.profiles_id !== user.id) {
-        setErrorMessage("Du har inte behörighet att redigera detta item.");
-        return;
-      }
-
-      setItem(data);
-      setName(data.name ?? "");
-      setDescription(data.description ?? "");
-      setCategory(data.category ?? "");
-
-      const validStatus = STATUS_OPTIONS.includes(data.status as Status)
-        ? (data.status as Status)
-        : "Unsorted";
-      setStatus(validStatus);
-
-      setRemoveImage(false);
-      removeSelectedFile();
     };
 
     fetchItem();
-
   }, [itemsID]);
 
   useEffect(() => {
@@ -128,157 +127,171 @@ const EditItem = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMessage(null);
-    setLoading(true);
+    clearError();
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setErrorMessage("Namn får inte vara tomt.");
+      return;
+    }
 
     if (!itemsID) {
-      setLoading(false);
       setErrorMessage("Saknar item-id i URL:en.");
       return;
     }
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    setLoading(true);
 
-    if (userError || !user) {
-      setLoading(false);
-      setErrorMessage("Du måste vara inloggad.");
-      return;
-    }
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-    const { data: currentItem, error: currentError } = await supabase
-      .from("items")
-      .select("items_id, spaces_id, profiles_id, image_url")
-      .eq("items_id", itemsID)
-      .single();
-
-    if (currentError || !currentItem) {
-      setLoading(false);
-      setErrorMessage(currentError?.message ?? "Kunde inte hämta item.");
-      return;
-    }
-
-    if (currentItem.profiles_id !== user.id) {
-      setLoading(false);
-      setErrorMessage("Du har inte behörighet att redigera detta item.");
-      return;
-    }
-
-    const oldImageUrl = (currentItem.image_url as string | null) ?? null;
-
-
-    let imageUrl: string | null = removeImage ? null : oldImageUrl;
-
-
-    if (removeImage && oldImageUrl) {
-      const oldPath = extractStoragePathFromPublicUrl(oldImageUrl);
-      if (oldPath) {
-    
-        await supabase.storage.from("item-images").remove([oldPath]);
-      }
-    }
-
-
-    if (file) {
-      const fileExt = file.name.split(".").pop() || "jpg";
-      const filePath = `${currentItem.spaces_id}/${crypto.randomUUID()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("item-images")
-        .upload(filePath, file, {
-          upsert: false,
-          contentType: file.type || "image/jpeg",
-          cacheControl: "3600",
-        });
-
-      if (uploadError) {
-        setLoading(false);
-        setErrorMessage(uploadError.message);
+      if (userError || !user) {
+        setErrorMessage("Du måste vara inloggad.");
         return;
       }
 
-      const { data: publicData } = supabase.storage
-        .from("item-images")
-        .getPublicUrl(filePath);
+      if (!item) {
+        setErrorMessage("Kunde inte läsa item-data.");
+        return;
+      }
 
-      imageUrl = publicData.publicUrl;
+      if (item.profiles_id !== user.id) {
+        setErrorMessage("Du har inte behörighet att redigera detta item.");
+        return;
+      }
 
+      const oldImageUrl = item.image_url ?? null;
+      let imageUrl: string | null = removeImage ? null : oldImageUrl;
 
-      if (oldImageUrl) {
+      if (removeImage && oldImageUrl) {
         const oldPath = extractStoragePathFromPublicUrl(oldImageUrl);
         if (oldPath) {
           await supabase.storage.from("item-images").remove([oldPath]);
         }
       }
+
+      if (file) {
+        const fileExt = file.name.split(".").pop() || "jpg";
+        const filePath = `${item.spaces_id}/${crypto.randomUUID()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("item-images")
+          .upload(filePath, file, {
+            upsert: false,
+            contentType: file.type || "image/jpeg",
+            cacheControl: "3600",
+          });
+
+        if (uploadError) {
+          setErrorMessage(uploadError.message);
+          return;
+        }
+
+        const { data: publicData } = supabase.storage
+          .from("item-images")
+          .getPublicUrl(filePath);
+
+        imageUrl = publicData.publicUrl;
+
+        if (oldImageUrl) {
+          const oldPath = extractStoragePathFromPublicUrl(oldImageUrl);
+          if (oldPath) {
+            await supabase.storage.from("item-images").remove([oldPath]);
+          }
+        }
+      }
+
+      const nextDescription = description.trim() || null;
+      const nextCategory = category.trim() || null;
+
+      const { error } = await supabase
+        .from("items")
+        .update({
+          name: trimmedName,
+          description: nextDescription,
+          category: nextCategory,
+          status,
+          image_url: imageUrl,
+        })
+        .eq("items_id", itemsID)
+        .eq("profiles_id", user.id);
+
+      if (error) {
+        setErrorMessage(error.message);
+        return;
+      }
+
+      setItem((prev) =>
+        prev
+          ? {
+              ...prev,
+              name: trimmedName,
+              description: nextDescription,
+              category: nextCategory,
+              status,
+              image_url: imageUrl,
+            }
+          : prev
+      );
+
+      setRemoveImage(false);
+      removeSelectedFile();
+
+      navigate(`/items/${itemsID}`);
+    } finally {
+      setLoading(false);
     }
-
-    const { error } = await supabase
-      .from("items")
-      .update({
-        name: name.trim(),
-        description: description.trim() || null,
-        category: category.trim() || null,
-        status,
-        image_url: imageUrl,
-      })
-      .eq("items_id", itemsID)
-      .eq("profiles_id", user.id);
-
-    setLoading(false);
-
-    if (error) {
-      setErrorMessage(error.message);
-      return;
-    }
-
-    setRemoveImage(false);
-    removeSelectedFile();
-
-    navigate(`/items/${itemsID}`);
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(
+    const ok = window.confirm(
       "Är du säker på att du vill radera detta item? Detta går inte att ångra."
     );
-    if (!confirmDelete) return;
+    if (!ok) return;
 
-    setErrorMessage(null);
-    setLoading(true);
+    clearError();
 
     if (!itemsID) {
-      setLoading(false);
       setErrorMessage("Saknar item-id i URL:en.");
       return;
     }
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    setLoading(true);
 
-    if (userError || !user) {
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setErrorMessage("Du måste vara inloggad.");
+        return;
+      }
+
+      if (!item) {
+        setErrorMessage("Kunde inte läsa item-data.");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("items")
+        .delete()
+        .eq("items_id", itemsID)
+        .eq("profiles_id", user.id);
+
+      if (error) {
+        setErrorMessage(error.message);
+        return;
+      }
+
+      navigate(`/spaces/${item.spaces_id}`);
+    } finally {
       setLoading(false);
-      setErrorMessage("Du måste vara inloggad.");
-      return;
     }
-
-    const { error } = await supabase
-      .from("items")
-      .delete()
-      .eq("items_id", itemsID)
-      .eq("profiles_id", user.id);
-
-    setLoading(false);
-
-    if (error) {
-      setErrorMessage(error.message);
-      return;
-    }
-
-    navigate(`/spaces/${item?.spaces_id}`);
   };
 
   return (
@@ -294,14 +307,14 @@ const EditItem = () => {
           <h2>Redigera föremål</h2>
         </div>
 
-          <button
-                type="button"
-                className="btn btn-danger"
-                onClick={handleDelete}
-                disabled={loading}
-              >
-                Ta bort föremål
-              </button>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={handleDelete}
+          disabled={loading}
+        >
+          Ta bort föremål
+        </button>
 
         {loading && <p className="editItemLoading">Laddar…</p>}
 
@@ -311,7 +324,7 @@ const EditItem = () => {
             <button
               className="AlertClose"
               type="button"
-              onClick={() => setErrorMessage(null)}
+              onClick={clearError}
               aria-label="Stäng meddelande"
             >
               ✕
@@ -376,7 +389,6 @@ const EditItem = () => {
 
               <div className="editItemImageBlock">
                 <div className="editItemImagePreview">
-
                   {previewUrl ? (
                     <div className="editItemImageWrap">
                       <img src={previewUrl} alt="Ny vald bild" />
@@ -429,7 +441,7 @@ const EditItem = () => {
             </div>
 
             <div className="editItemActions">
-             <button className="btn btn-primary" type="submit" disabled={loading}>
+              <button className="btn btn-primary" type="submit" disabled={loading}>
                 {loading ? "Sparar..." : "Spara ändringar"}
               </button>
 

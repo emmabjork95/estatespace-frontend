@@ -1,21 +1,17 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./AuthNavbar.css";
+
 import logo from "../../../assets/logos/logo.png";
 import navBg from "../../../assets/backgrounds/background.png";
-export const AuthNavbar = () => {
-  const { pathname } = useLocation();
-  const onLogin = pathname.startsWith("/auth/login");
-  const onSignup = pathname.startsWith("/auth/signup");
 
+const linkClass = ({ isActive }: { isActive: boolean }) =>
+  isActive ? "authNavLink authNavLink--active" : "authNavLink";
+
+export const AuthNavbar = () => {
   return (
     <header className="authHeader">
       <nav className="authNavbar">
-        <img
-          src={navBg}
-          alt=""
-          aria-hidden="true"
-          className="authNavbarBg"
-        />
+        <img src={navBg} alt="" aria-hidden="true" className="authNavbarBg" />
 
         <NavLink to="/" className="authLogoLink" aria-label="Till startsidan">
           <img src={logo} alt="EstateSpace logo" className="authLogoImg" />
@@ -24,31 +20,17 @@ export const AuthNavbar = () => {
         <div className="authNavCenter" />
 
         <ul className="authNavRight">
-          {!onSignup && (
-            <li>
-              <NavLink
-                to="/auth/signup"
-                className={({ isActive }) =>
-                  isActive ? "authNavLink authNavLink--active" : "authNavLink"
-                }
-              >
-                Skapa konto
-              </NavLink>
-            </li>
-          )}
+          <li>
+            <NavLink to="/auth/signup" className={linkClass}>
+              Skapa konto
+            </NavLink>
+          </li>
 
-          {!onLogin && (
-            <li>
-              <NavLink
-                to="/auth/login"
-                className={({ isActive }) =>
-                  isActive ? "authNavLink authNavLink--active" : "authNavLink"
-                }
-              >
-                Logga in
-              </NavLink>
-            </li>
-          )}
+          <li>
+            <NavLink to="/auth/login" className={linkClass}>
+              Logga in
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </header>

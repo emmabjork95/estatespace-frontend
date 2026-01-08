@@ -1,19 +1,16 @@
-import { type FormEvent } from "react";
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabaseClient";
-import { useNavigate, Link } from "react-router-dom";
 import { useRedirect } from "../hooks/useRedirect";
-import { useSearchParams } from "react-router-dom";
 import "../styles/Login.css";
 
 const Login = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
+  const redirect = useRedirect("/dashboard");
 
-const redirect = useRedirect("/dashboard");
-
-const [searchParams] = useSearchParams();
-const redirectAccept = searchParams.get("redirect") || "";
-const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
+  const [searchParams] = useSearchParams();
+  const redirectParam = searchParams.get("redirect") || "";
+  const isInviteRedirect = redirectParam.startsWith("/auth/invite/");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,9 +34,7 @@ const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
       return;
     }
 
-    if (data.session) {
-      navigate(redirect);
-    }
+    if (data.session) navigate(redirect);
   };
 
   return (
@@ -48,13 +43,12 @@ const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
         <h1 className="login-title">Logga in</h1>
 
         {isInviteRedirect && (
-  <div className="Alert Alert--info">
-    Du behöver logga in för att acceptera inbjudan.
-  </div>
-)}
+          <div className="Alert Alert--info">
+            Du behöver logga in för att acceptera inbjudan.
+          </div>
+        )}
 
-
-        <form onSubmit={handleSubmit} className="login-form">
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="email">E-post</label>
             <input
@@ -64,6 +58,7 @@ const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              disabled={loading}
             />
           </div>
 
@@ -76,6 +71,7 @@ const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
+              disabled={loading}
             />
           </div>
 
@@ -87,7 +83,11 @@ const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
 
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-          <button className="btn btn-primary loginPrimaryBtn" type="submit" disabled={loading}>
+          <button
+            className="btn btn-primary loginPrimaryBtn"
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Loggar in..." : "Logga in"}
           </button>
         </form>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabaseClient";
 import "../styles/AcceptInvite.css";
@@ -17,9 +17,13 @@ export function AcceptInvite() {
 
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const [invite, setInvite] = useState<InviteRow | null>(null);
   const [currentEmail, setCurrentEmail] = useState<string | null>(null);
+
+  const redirectToLogin = () => {
+    if (!token) return;
+    navigate(`/auth/login?redirect=/auth/invite/${token}`);
+  };
 
   useEffect(() => {
     const loadInvite = async () => {
@@ -40,9 +44,7 @@ export function AcceptInvite() {
 
       if (inviteError || !inviteData) {
         setLoading(false);
-        setErrorMessage(
-          "Inbjudan hittades inte, eller så har du inte behörighet."
-        );
+        setErrorMessage("Inbjudan hittades inte, eller så har du inte behörighet.");
         return;
       }
 
@@ -61,7 +63,7 @@ export function AcceptInvite() {
 
       if (userError || !user) {
         setLoading(false);
-        navigate(`/auth/login?redirect=/auth/invite/${token}`);
+        redirectToLogin();
         return;
       }
 
@@ -70,17 +72,16 @@ export function AcceptInvite() {
     };
 
     loadInvite();
-  }, [token, navigate]);
+  }, [token]);
+
+  const emailMismatch = useMemo(() => {
+    if (!invite || !currentEmail) return false;
+    return currentEmail.toLowerCase() !== invite.invited_email.toLowerCase();
+  }, [invite, currentEmail]);
 
   const handleSignOutAndContinue = async () => {
-    if (!token) return;
     await supabase.auth.signOut();
-    navigate(`/auth/login?redirect=/auth/invite/${token}`);
-  };
-
-  const handleGoToLogin = () => {
-    if (!token) return;
-    navigate(`/auth/login?redirect=/auth/invite/${token}`);
+    redirectToLogin();
   };
 
   const handleAccept = async () => {
@@ -106,11 +107,6 @@ export function AcceptInvite() {
 
     navigate(`/spaces/${data}`);
   };
-
-  const emailMismatch =
-    !!invite &&
-    !!currentEmail &&
-    currentEmail.toLowerCase() !== invite.invited_email.toLowerCase();
 
   if (loading) {
     return (
@@ -145,42 +141,32 @@ export function AcceptInvite() {
             </p>
 
             {emailMismatch && (
-  <>
-    <div className="Alert Alert--error">
-      <span>
-        Du är inloggad som{" "}
-        <span className="invite-strong">{currentEmail}</span>, men
-        inbjudan är för{" "}
-        <span className="invite-strong">{invite.invited_email}</span>.
-      </span>
-    </div>
+              <>
+                <div className="Alert Alert--error">
+                  <span>
+                    Du är inloggad som{" "}
+                    <span className="invite-strong">{currentEmail}</span>, men
+                    inbjudan är för{" "}
+                    <span className="invite-strong">{invite.invited_email}</span>.
+                  </span>
+                </div>
 
-    <div className="invite-actions">
-        <button
-        type="button"
-        className="btn"
-        onClick={handleGoToLogin}
-      >
-        Logga in med annat konto
-      </button>
-      <button
-        type="button"
-        className="btn"
-        onClick={handleSignOutAndContinue}
-      >
-        Logga ut
-      </button>
-
-    
-    </div>
-  </>
-)}
+                <div className="invite-actions">
+                  <button type="button" className="btn" onClick={redirectToLogin}>
+                    Logga in med annat konto
+                  </button>
+                  <button type="button" className="btn" onClick={handleSignOutAndContinue}>
+                    Logga ut
+                  </button>
+                </div>
+              </>
+            )}
 
             <button
               type="button"
               onClick={handleAccept}
               disabled={!currentEmail || emailMismatch}
-              className="btn btn-accept "
+              className="btn btn-accept"
             >
               Acceptera och gå med
             </button>

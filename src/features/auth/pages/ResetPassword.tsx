@@ -1,13 +1,15 @@
 import { type FormEvent, useEffect, useState } from "react";
-import { supabase } from "../../../shared/lib/supabaseClient";
 import { Link } from "react-router";
+import { supabase } from "../../../shared/lib/supabaseClient";
 import "../styles/ResetPassword.css";
 
 const ResetPassword = () => {
   const [checking, setChecking] = useState(true);
   const [hasSession, setHasSession] = useState(false);
+
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -18,26 +20,22 @@ const ResetPassword = () => {
   };
 
   useEffect(() => {
-    const check = async () => {
+    const checkSession = async () => {
       setChecking(true);
       setErrorMessage(null);
 
       const { data } = await supabase.auth.getSession();
-      const session = data.session;
-
-      setHasSession(!!session);
+      setHasSession(!!data.session);
       setChecking(false);
     };
 
-    check();
+    checkSession();
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setHasSession(!!session);
     });
 
-    return () => {
-      sub.subscription.unsubscribe();
-    };
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -115,12 +113,8 @@ const ResetPassword = () => {
         <p className="reset-sub">Välj ett nytt lösenord för ditt konto.</p>
 
         {(errorMessage || success) && (
-          <div
-            className={`Alert ${
-              errorMessage ? "Alert--error" : "Alert--success"
-            }`}
-          >
-            <span>{errorMessage ?? "Lösenordet uppdaterades "}</span>
+          <div className={`Alert ${errorMessage ? "Alert--error" : "Alert--success"}`}>
+            <span>{errorMessage ?? "Lösenordet uppdaterades"}</span>
             <button
               type="button"
               className="AlertClose"
@@ -132,7 +126,7 @@ const ResetPassword = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="reset-form">
+        <form className="reset-form" onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="password">Nytt lösenord</label>
             <input
