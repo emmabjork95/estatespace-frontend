@@ -1,19 +1,18 @@
 .profilePage {
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 32px 16px;
 }
 
 .profileCard {
   width: 100%;
   max-width: 520px;
-
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-
   padding: 22px;
 }
 
@@ -43,49 +42,6 @@
   font-size: 14px;
 }
 
-.profileAlert {
-  margin-top: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  border: 1px solid transparent;
-
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.profileAlertText {
-  line-height: 1.35;
-}
-
-.profileAlertClose {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.65);
-  font-size: 14px;
-  padding: 2px 6px;
-  border-radius: 8px;
-}
-
-.profileAlertClose:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.profileAlert--error {
-  background: rgba(220, 20, 60, 0.08);
-  border-color: rgba(220, 20, 60, 0.25);
-  color: #8b0a21;
-}
-
-.profileAlert--success {
-  background: rgba(0, 128, 0, 0.08);
-  border-color: rgba(0, 128, 0, 0.25);
-  color: #0d5f2a;
-}
-
 .profileInfoRow {
   margin-top: 18px;
   display: flex;
@@ -104,7 +60,7 @@
 .profileInfoValue {
   font-weight: 600;
   font-size: 13px;
-  word-break: break-word;
+  overflow-wrap: break-word;
   text-align: right;
 }
 
@@ -146,11 +102,11 @@
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.14);
-  outline: none;
   font-size: 14px;
+  outline: none;
 }
 
-.profileInput:focus {
+.profileInput:focus-visible {
   border-color: rgba(0, 0, 0, 0.35);
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
 }

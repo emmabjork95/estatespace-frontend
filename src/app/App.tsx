@@ -1,19 +1,11 @@
-import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import "../shared/styles/App.css";
 import "../shared/pages/Home.css";
 import { router } from "./Router";
 import { AuthProvider } from "./providers/AuthContext";
-
+import "../shared/components/ui/Global.css";
 
 function App() {
-useEffect(() => {
-const base = import.meta.env.VITE_API_URL.replace(/\/$/, "");
-fetch(`${base}/health`)
-    .then((res) => res.json())
-    .then((data) => console.log("Backend health:", data))
-    .catch((err) => console.error("Backend health error:", err));
-}, []);
 
   return (
     <AuthProvider>

@@ -6,7 +6,7 @@ const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="notfound-page">
+    <div className="notfoundPage">
       <div className="notfound-card">
         <h1 className="notfound-title">404</h1>
         <p className="notfound-sub">

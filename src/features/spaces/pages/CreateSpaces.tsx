@@ -56,14 +56,13 @@ const CreateSpaces = () => {
     <div className="createSpaceCard">
       <div className="createSpaceHeader">
         <h2>Skapa nytt space</h2>
-
       </div>
 
       {errorMessage && (
-        <div className="createSpaceAlert createSpaceAlert--error">
-          <span className="createSpaceAlertText">{errorMessage}</span>
+        <div className="Alert Alert--error">
+          <span className="AlertText">{errorMessage}</span>
           <button
-            className="createSpaceAlertClose"
+            className="AlertClose"
             type="button"
             onClick={() => setErrorMessage(null)}
             aria-label="Stäng meddelande"

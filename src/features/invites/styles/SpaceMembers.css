@@ -1,5 +1,5 @@
 .spaceMembersPage {
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   padding: 32px 16px;
@@ -8,13 +8,11 @@
 .spaceMembersCard {
   width: 100%;
   max-width: 720px;
-
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-
-  padding: 22px;
+  padding: 18px;
 }
 
 .spaceMembersTopRow {
@@ -65,50 +63,6 @@
   margin: 18px 0;
 }
 
-.spaceMembersAlert {
-  margin-top: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  border: 1px solid transparent;
-
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.spaceMembersAlertText {
-  line-height: 1.35;
-}
-
-.spaceMembersAlertClose {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.65);
-  font-size: 14px;
-  padding: 2px 6px;
-  border-radius: 8px;
-}
-
-.spaceMembersAlertClose:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.spaceMembersAlert--error {
-  background: rgba(220, 20, 60, 0.08);
-  border-color: rgba(220, 20, 60, 0.25);
-  color: #8b0a21;
-}
-
-.spaceMembersAlert--info {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.10);
-  color: rgba(0, 0, 0, 0.75);
-}
-
-
 .spaceMembersSection {
   display: grid;
   gap: 12px;
@@ -133,7 +87,6 @@
   background: rgba(0, 0, 0, 0.02);
 }
 
-
 .spaceMembersList {
   list-style: none;
   padding: 0;
@@ -144,10 +97,10 @@
 
 .spaceMembersRow {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: space-between;
   gap: 12px;
-
   padding: 12px;
   border-radius: 14px;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -173,7 +126,7 @@
   color: rgba(0, 0, 0, 0.88);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .spaceMembersMeta {
@@ -181,7 +134,7 @@
   color: rgba(0, 0, 0, 0.65);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .spaceMembersBadge {
@@ -207,18 +160,19 @@
   font-size: 14px;
 }
 
-@media (max-width: 520px) {
+
+@media (min-width: 768px) {
   .spaceMembersCard {
-    padding: 18px;
+    padding: 22px;
   }
 
   .spaceMembersRow {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
   }
 
-  .spaceMembersMeta,
-  .spaceMembersName {
-    white-space: normal;
+  .spaceMembersName,
+  .spaceMembersMeta {
+    white-space: nowrap;
   }
 }

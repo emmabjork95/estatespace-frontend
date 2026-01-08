@@ -1,13 +1,10 @@
-
 import { type FormEvent } from "react";
 import { useState } from "react";
 import { supabase } from "../../../shared/lib/supabaseClient";
-import {  useNavigate, Link } from "react-router-dom";
-import "../styles/Login.css";
+import { useNavigate, Link } from "react-router-dom";
 import { useRedirect } from "../hooks/useRedirect";
 import { useSearchParams } from "react-router-dom";
-
-
+import "../styles/Login.css";
 
 const Login = () => {
 const navigate = useNavigate();
@@ -46,12 +43,12 @@ const isInviteRedirect = redirectAccept.startsWith("/auth/invite/");
   };
 
   return (
-    <div className="login-page">
+    <div className="loginPage">
       <div className="login-card">
         <h1 className="login-title">Logga in</h1>
 
         {isInviteRedirect && (
-  <div className="login-alert login-alert--info">
+  <div className="Alert Alert--info">
     Du behöver logga in för att acceptera inbjudan.
   </div>
 )}

@@ -12,8 +12,6 @@ type InviteRow = {
 };
 
 export function AcceptInvite() {
-  console.log("ACCEPT INVITE – NY VERSION KÖRS");
-
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -116,7 +114,7 @@ export function AcceptInvite() {
 
   if (loading) {
     return (
-      <div className="invite-page">
+      <div className="page">
         <div className="invite-card">
           <h1 className="invite-title">Acceptera inbjudan</h1>
           <p className="invite-sub">Laddar…</p>
@@ -129,12 +127,12 @@ export function AcceptInvite() {
   }
 
   return (
-    <div className="invite-page">
+    <div className="page">
       <div className="invite-card">
         <h1 className="invite-title">Acceptera inbjudan</h1>
 
         {errorMessage && (
-          <div className="invite-alert invite-alert--error">
+          <div className="Alert Alert--error">
             <span>{errorMessage}</span>
           </div>
         )}
@@ -148,7 +146,7 @@ export function AcceptInvite() {
 
             {emailMismatch && (
   <>
-    <div className="invite-alert invite-alert--error">
+    <div className="Alert Alert--error">
       <span>
         Du är inloggad som{" "}
         <span className="invite-strong">{currentEmail}</span>, men

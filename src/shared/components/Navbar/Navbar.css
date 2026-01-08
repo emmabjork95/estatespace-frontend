@@ -1,36 +1,29 @@
 .site-header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto;
   z-index: 100;
 }
 
-.site-main {
+.site-main { 
   width: 100%;
   padding-top: 110px;
   background: #fff;
 }
-
 
 .navbar {
   position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-
   padding: 12px 16px;
   min-height: 60px;
-
-
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .navbar::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(../assets/backgrounds/background.png);
+  background-image: url(../../../assets/backgrounds/background.png);
   background-size: cover;
   background-position: center;
   opacity: 0.75;
@@ -39,8 +32,6 @@
 
 .navbar-overlay {
   position: absolute;
-  
-
 }
 
 .logo-link {
@@ -49,11 +40,10 @@
 }
 
 .logo-img {
+  display: block;
   height: 30px;
   width: auto;
-  display: block;
 }
-
 
 .nav-actions {
   display: flex;
@@ -62,26 +52,26 @@
   justify-self: end;
 }
 
-
 .nav-right {
   display: none;
 }
 
-
 .nav-icon-link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   width: 42px;
   height: 42px;
   border-radius: 12px;
-
   background: transparent;
   border: 1px solid transparent;
-
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-icon-link:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .nav-icon {
@@ -91,48 +81,49 @@
   transition: opacity 0.2s ease, transform 0.15s ease, filter 0.2s ease;
 }
 
-.nav-icon-link:hover {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.06);
-}
-
 .nav-icon-link:hover .nav-icon {
   opacity: 0.92;
-}
-
-.nav-icon-link.active {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .nav-icon-link.active .nav-icon {
   opacity: 1;
   transform: scale(1.08);
-  filter: brightness(0.35) contrast(1.1);
 }
 
+.nav-icon-link::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: #4b4b4b;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.nav-icon-link.active::after {
+  opacity: 1;
+}
 
 .notif-trigger {
   position: relative;
 }
 
 .notif-badge {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-
-  min-width: 18px;
-  height: 18px;
-  padding: 0 6px;
-
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
   background: #e53935;
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.9);
@@ -142,15 +133,12 @@
   position: absolute;
   right: 0;
   top: calc(100% + 12px);
-
   width: min(380px, calc(100vw - 32px));
   max-height: 440px;
   overflow: auto;
-
   background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(0, 0, 0, 0.10);
   border-radius: 16px;
-
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
   z-index: 10000;
 }
@@ -160,11 +148,9 @@
   position: absolute;
   top: -8px;
   right: 18px;
-
   width: 14px;
   height: 14px;
   background: rgba(255, 255, 255, 0.98);
-
   transform: rotate(45deg);
   border-left: 1px solid rgba(0, 0, 0, 0.08);
   border-top: 1px solid rgba(0, 0, 0, 0.08);
@@ -174,7 +160,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 12px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
@@ -188,7 +173,6 @@
   border: none;
   background: transparent;
   cursor: pointer;
-
   font-size: 12px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.65);
@@ -206,7 +190,6 @@
   color: rgba(0, 0, 0, 0.65);
 }
 
-
 .notif-list {
   list-style: none;
   margin: 0;
@@ -217,10 +200,8 @@
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 12px;
-
   padding: 12px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
   align-items: flex-start;
 }
 
@@ -260,45 +241,14 @@
   color: rgba(0, 0, 0, 0.55);
 }
 
-.notif-readbtn {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.03);
-  cursor: pointer;
-
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.75);
-
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.05s ease;
-}
-
-.notif-readbtn:hover {
-  background: rgba(0, 0, 0, 0.07);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-.notif-readbtn:active {
-  transform: translateY(1px);
-}
-
-
 .nav-burger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   background: none;
   border: none;
   font-size: 26px;
   cursor: pointer;
-
   border-radius: 10px;
   padding: 8px 10px;
 }
@@ -307,7 +257,6 @@
   outline: 2px solid rgba(0, 0, 0, 0.35);
   outline-offset: 2px;
 }
-
 
 .nav-menuOverlay {
   position: fixed;
@@ -321,12 +270,10 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 16px;
-
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
-
   padding: 8px;
   z-index: 200;
   min-width: 180px;
@@ -337,7 +284,6 @@
   padding: 10px 12px;
   border: none;
   background: transparent;
-
   text-align: left;
   font-weight: 600;
   cursor: pointer;
@@ -357,17 +303,10 @@
   background: rgba(220, 38, 38, 0.14);
 }
 
-/* =========================
-   480–768
-========================= */
 
 @media (min-width: 480px) {
   .navbar {
     padding-top: 20px;
-  }
-
-  .logo-img {
-    height: 30px;
   }
 
   .nav-mobileMenu {
@@ -375,26 +314,21 @@
   }
 }
 
-/* =========================
-   769–1279 (DESKTOP)
-========================= */
-
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .navbar {
     grid-template-columns: auto 1fr auto;
     align-items: center;
     padding: 14px 40px;
     min-height: 84px;
-    
   }
 
   .logo-img {
     height: 30px;
-     width: auto;
+    width: auto;
     display: block;
   }
 
-    .nav-actions {
+  .nav-actions {
     display: none;
   }
 
@@ -417,10 +351,6 @@
   }
 }
 
-/* =========================
-   1280-1439 (DESKTOP)
-========================= */
-
 @media (min-width: 1280px) {
   .navbar {
     padding: 14px 56px;
@@ -429,14 +359,4 @@
   .nav-right {
     gap: 20px;
   }
-
-    .logo-img {
-    height: 30px;
-     width: auto;
-    display: block;
-  }
 }
-
-
-
-

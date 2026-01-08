@@ -1,9 +1,10 @@
 .p-layout {
+  width: 100%;
   min-height: 100vh;
   background: #fff;
   color: #111;
 
-  padding: 50px 72px 40px;
+  padding: 40px 22px 30px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -14,7 +15,8 @@
 
 .dash-header {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 18px;
@@ -22,15 +24,9 @@
 
 .dash-title {
   margin: 0;
-  font-size: 40px;
+  font-size: 32px;
   font-weight: 900;
   letter-spacing: -0.6px;
-}
-
-.dash-subtitle {
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.6);
 }
 
 .p-searchRow {
@@ -42,11 +38,9 @@
   width: 100%;
   display: flex;
   align-items: center;
-
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 999px;
-
   padding: 12px 16px;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
@@ -65,23 +59,24 @@
   font-size: 14px;
 }
 
-.p-title {
-  font-size: 22px;
-  line-height: 1.2;
-  margin-top: 48px; 
-  margin-bottom: 10px;
-}
-
+.p-title,
 .p-title-owned {
   font-size: 22px;
   line-height: 1.2;
-  margin-top: 24px;
   margin-bottom: 10px;
+}
+
+.p-title {
+  margin-top: 48px;
+}
+
+.p-title-owned {
+  margin-top: 24px;
 }
 
 .p-boardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 18px;
   padding-top: 6px;
 }
@@ -176,34 +171,27 @@
   color: rgba(0, 0, 0, 0.65);
 }
 
-
 .dashboard-loading {
   padding: 20px;
 }
 
-.error-message {
-  padding: 20px;
-  color: #b00020;
-}
-
-@media (max-width: 900px) {
-  .p-layout {
-    padding: 40px 22px 30px;
-  }
-
-  .dash-title {
-    font-size: 32px;
-  }
-}
-
-@media (max-width: 520px) {
+@media (min-width: 480px) {
   .dash-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
   }
 
   .p-boardGrid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
+@media (min-width: 1024px) {
+  .p-layout {
+    padding: 50px 72px 40px;
+  }
+
+  .dash-title {
+    font-size: 40px;
+  }
+}

@@ -5,8 +5,6 @@ import { STATUS_OPTIONS, STATUS_LABELS, type Item, type Status } from "../ItemsT
 import "../styles/EditItem.css";
 import "../../../shared/components/ui/Buttons.css";
 
-
-
 const EditItem = () => {
   const navigate = useNavigate();
   const { itemsID } = useParams();
@@ -17,7 +15,6 @@ const EditItem = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState<Status>("Unsorted");
-
 
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -44,7 +41,6 @@ const EditItem = () => {
   setRemoveImage(true);
   removeSelectedFile();
 };
-
 
   const extractStoragePathFromPublicUrl = (publicUrl: string) => {
     const marker = "/storage/v1/object/public/item-images/";
@@ -118,7 +114,6 @@ const EditItem = () => {
     fetchItem();
 
   }, [itemsID]);
-
 
   useEffect(() => {
     if (!file) return;
@@ -219,7 +214,6 @@ const EditItem = () => {
       }
     }
 
-
     const { error } = await supabase
       .from("items")
       .update({
@@ -298,7 +292,6 @@ const EditItem = () => {
 
         <div className="editItemHeader">
           <h2>Redigera föremål</h2>
-         
         </div>
 
           <button
@@ -313,10 +306,10 @@ const EditItem = () => {
         {loading && <p className="editItemLoading">Laddar…</p>}
 
         {!loading && errorMessage && (
-          <div className="editItemAlert editItemAlert--error">
-            <span className="editItemAlertText">{errorMessage}</span>
+          <div className="Alert Alert--error">
+            <span className="AlertText">{errorMessage}</span>
             <button
-              className="editItemAlertClose"
+              className="AlertClose"
               type="button"
               onClick={() => setErrorMessage(null)}
               aria-label="Stäng meddelande"
@@ -364,8 +357,6 @@ const EditItem = () => {
                   </option>
                 ))}
               </select>
-
-    
             </label>
 
             <label className="editItemField">
@@ -379,7 +370,6 @@ const EditItem = () => {
                 disabled={loading}
               />
             </label>
-
 
             <div className="editItemField">
               <span>Bild</span>
@@ -434,10 +424,6 @@ const EditItem = () => {
                     }}
                     disabled={loading}
                   />
-
-                 
-
-                  
                 </div>
               </div>
             </div>
@@ -455,8 +441,6 @@ const EditItem = () => {
               >
                 Avbryt
               </button>
-
-             
             </div>
           </form>
         )}

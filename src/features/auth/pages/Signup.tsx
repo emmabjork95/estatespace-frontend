@@ -58,7 +58,7 @@ export function Signup() {
   };
 
   return (
-    <div className="signup-page">
+    <div className="page">
       <div className="signup-card">
         <h1 className="signup-title">Skapa konto</h1>
 

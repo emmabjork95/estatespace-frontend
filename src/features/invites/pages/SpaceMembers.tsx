@@ -201,16 +201,16 @@ const SpaceMembers = () => {
 
         {(errorMessage || loading) && (
           <div
-            className={`spaceMembersAlert ${
-              errorMessage ? "spaceMembersAlert--error" : "spaceMembersAlert--info"
+            className={`Alert ${
+              errorMessage ? "Alert--error" : "Alert--info"
             }`}
           >
-            <span className="spaceMembersAlertText">
+            <span className="AlertText">
               {errorMessage ?? "Laddar…"}
             </span>
             {errorMessage && (
               <button
-                className="spaceMembersAlertClose"
+                className="AlertClose"
                 type="button"
                 onClick={() => setErrorMessage(null)}
                 aria-label="Stäng meddelande"

@@ -1,16 +1,13 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabaseClient";
-import "../styles/ResetPassword.css";
 import { Link } from "react-router";
+import "../styles/ResetPassword.css";
 
 const ResetPassword = () => {
-
   const [checking, setChecking] = useState(true);
   const [hasSession, setHasSession] = useState(false);
-
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -21,7 +18,6 @@ const ResetPassword = () => {
   };
 
   useEffect(() => {
- 
     const check = async () => {
       setChecking(true);
       setErrorMessage(null);
@@ -73,13 +69,11 @@ const ResetPassword = () => {
     setSuccess(true);
     setPassword("");
     setPassword2("");
-
-    
   };
 
   if (checking) {
     return (
-      <div className="reset-page">
+      <div className="page">
         <div className="reset-card">
           <h1 className="reset-title">Återställ lösenord</h1>
           <p className="reset-sub">Laddar…</p>
@@ -91,10 +85,9 @@ const ResetPassword = () => {
     );
   }
 
-
   if (!hasSession) {
     return (
-      <div className="reset-page">
+      <div className="page">
         <div className="reset-card">
           <h1 className="reset-title">Återställ lösenord</h1>
           <p className="reset-sub">
@@ -116,21 +109,21 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="reset-page">
+    <div className="page">
       <div className="reset-card">
         <h1 className="reset-title">Återställ lösenord</h1>
         <p className="reset-sub">Välj ett nytt lösenord för ditt konto.</p>
 
         {(errorMessage || success) && (
           <div
-            className={`reset-alert ${
-              errorMessage ? "reset-alert--error" : "reset-alert--success"
+            className={`Alert ${
+              errorMessage ? "Alert--error" : "Alert--success"
             }`}
           >
             <span>{errorMessage ?? "Lösenordet uppdaterades "}</span>
             <button
               type="button"
-              className="reset-alertClose"
+              className="AlertClose"
               onClick={clearAlerts}
               aria-label="Stäng meddelande"
             >

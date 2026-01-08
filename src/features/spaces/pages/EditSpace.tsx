@@ -163,7 +163,7 @@ const EditSpace = () => {
   if (loading) {
     return (
       <div className="editSpacePage">
-        <div className="editSpaceCard">
+        <div className="createCard">
           <div className="editSpaceHeader">
             <h2>Redigera space</h2>
             <p className="editSpaceSub">Laddar…</p>
@@ -178,7 +178,7 @@ const EditSpace = () => {
 
   return (
     <div className="editSpacePage">
-      <div className="editSpaceCard">
+      <div className="createCard">
         <div className="editSpaceTopRow">
           <button
             className="btn btn-ghost"
@@ -205,13 +205,13 @@ const EditSpace = () => {
 
         {(errorMessage || message) && (
           <div
-            className={`editSpaceAlert ${
-              errorMessage ? "editSpaceAlert--error" : "editSpaceAlert--success"
+            className={`Alert ${
+              errorMessage ? "Alert--error" : "Alert--success"
             }`}
           >
-            <span className="editSpaceAlertText">{errorMessage ?? message}</span>
+            <span className="AlertText">{errorMessage ?? message}</span>
             <button
-              className="editSpaceAlertClose"
+              className="AlertClose"
               type="button"
               onClick={clearAlerts}
               aria-label="Stäng meddelande"

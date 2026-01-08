@@ -82,18 +82,16 @@ export function InviteMember({ spacesID }: Props) {
 
   return (
     <section className="inviteMember">
- 
-
       {(errorMessage || success) && (
         <div
-          className={`inviteMemberAlert ${
-            errorMessage ? "inviteMemberAlert--error" : "inviteMemberAlert--success"
+          className={`Alert ${
+            errorMessage ? "Alert--error" : "Alert--success"
           }`}
         >
           <span>{errorMessage ?? "Inbjudan skickad "}</span>
           <button
             type="button"
-            className="inviteMemberAlertClose"
+            className="AlertClose"
             onClick={clearAlerts}
             aria-label="Stäng meddelande"
           >
@@ -127,8 +125,6 @@ export function InviteMember({ spacesID }: Props) {
           {loading ? "Skickar…" : "Skicka"}
         </button>
       </div>
-
-   
     </section>
   );
 }

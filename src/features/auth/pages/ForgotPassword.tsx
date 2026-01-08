@@ -30,7 +30,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="forgot-page">
+    <div className="page">
       <div className="forgot-card">
         <h1 className="forgot-title">Glömt lösenord</h1>
 

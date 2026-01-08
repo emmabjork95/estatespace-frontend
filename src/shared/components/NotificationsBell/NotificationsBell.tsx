@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import "./Notifications.css";
-
-
+import "../ui/Buttons.css";
 
 type NotificationRow = {
   notifications_id: string;
@@ -61,7 +59,6 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
     } = await supabase.auth.getUser();
 
     if (userErr) {
-      console.log("getUser error:", userErr);
       setRows([]);
       setLoading(false);
       return;
@@ -84,9 +81,6 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       .eq("recipient_profiles_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
-
-    console.log("NOTIF fetch error:", error);
-    console.log("NOTIF fetch data:", data);
 
     setLoading(false);
 
@@ -133,7 +127,6 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
       .eq("notifications_id", id);
 
     if (error) {
-      console.log("delete notif error:", error);
       setRows(prev);
       fetchNotifications();
     }
@@ -256,10 +249,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
                       <small>{timeAgo(n.created_at)}</small>
                     </div>
                   </button>
-
-                  <div className="notif-actions">
-              
-
+                  
                     <button
                       type="button"
                       className="notif-deletebtn"
@@ -272,7 +262,7 @@ export function NotificationsBell({ children }: NotificationsBellProps) {
                     >
                       X
                     </button>
-                  </div>
+               
                 </li>
               ))}
             </ul>

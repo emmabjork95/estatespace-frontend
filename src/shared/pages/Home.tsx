@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../shared/lib/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
-
 import "./Home.css";
-
-
 import logo from "../../assets/logos/logo.png";
 import slogan from "../../assets/logos/slogan.svg";
 import heroBg from "../../assets/backgrounds/hero-background.png";
@@ -12,8 +9,6 @@ import storage from "../../assets/home-assets/messy-storage.svg";
 import camera from "../../assets/home-assets/camera.svg";
 import ipad from "../../assets/home-assets/ipad.svg";
 import interested from "../../assets/home-assets/interested.svg";
-
-
 
 export default function Home() {
   const navigate = useNavigate();
@@ -78,7 +73,7 @@ export default function Home() {
                 <span className="howNr">2.</span> Fota föremålet
               </p>
                     <p className="howStep-desc">
-                Fotografera föremålet direkt med mobilen om du inte redan har ett foto som du vill använda.
+                Fotografera föremålet direkt med mobilen (om du inte redan har ett foto som du vill använda).
               </p>
             </li>
 
@@ -90,7 +85,7 @@ export default function Home() {
                 <span className="howNr">3.</span> Lägg upp i EstateSpace
               </p>
                            <p className="howStep-desc">
-                Skapa ett Space på EstateSpace, ladda sedan upp bilden och en titel. Välj om du vill donera, slänga, spara eller fortfarande Osorterad. 
+                Skapa ett Space på EstateSpace, ladda sedan upp bilden och en titel. Välj status "donera", "slänga", "spara" eller "osorterad". 
               </p>
             </li>
           </ol>
@@ -102,7 +97,7 @@ export default function Home() {
   <div className="homeContainer">
     <div className="shareRow">
       <div className="shareCopy">
-        <h2 className="homeH2 shareTitle">Dela ditt Space!</h2>
+        <h2 className="homeH2 shareTitle">Dela ditt Space</h2>
         <p className="shareDesc">
           Du kan även dela ditt Space med vänner och familj för att se om någon
           är intresserad av att ärva dina gamla saker.

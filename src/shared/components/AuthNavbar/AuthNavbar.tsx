@@ -1,9 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import "./AuthNavbar.css";
-
 import logo from "../../../assets/logos/logo.png";
 import navBg from "../../../assets/backgrounds/background.png";
-
 export const AuthNavbar = () => {
   const { pathname } = useLocation();
   const onLogin = pathname.startsWith("/auth/login");

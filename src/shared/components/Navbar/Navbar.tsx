@@ -3,12 +3,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import "./Navbar.css";
 import "../ui/Buttons.css";
-
 import logo from "../../../assets/logos/logo.png";
 import settingsIcon from "../../../assets/icons/settings.svg";
 import bellIcon from "../../../assets/icons/bell.svg";
 import homeIcon from "../../../assets/icons/home.png";
-
 import { NotificationsBell } from "../NotificationsBell/NotificationsBell";
 
 export const Navbar = () => {
@@ -34,7 +32,6 @@ export const Navbar = () => {
     <header className="site-header">
       <nav className="navbar" onClick={() => setMenuOpen(false)}>
         <div className="navbar-overlay" aria-hidden="true" />
-
         <NavLink
           to="/dashboard"
           className="logo-link"

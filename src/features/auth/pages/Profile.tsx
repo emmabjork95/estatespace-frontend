@@ -174,13 +174,13 @@ export function Profile() {
 
         {(errorMessage || message) && (
           <div
-            className={`profileAlert ${
-              errorMessage ? "profileAlert--error" : "profileAlert--success"
+            className={`Alert ${
+              errorMessage ? "Alert--error" : "Alert--success"
             }`}
           >
             <span>{errorMessage ?? message}</span>
             <button
-              className="profileAlertClose"
+              className="AlertClose"
               onClick={clearAlerts}
               type="button"
             >
@@ -239,10 +239,12 @@ export function Profile() {
             <input
               className="profileInput"
               type="password"
+              name="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               onFocus={clearAlerts}
               required
+              autoComplete="new-password"
             />
           </label>
 

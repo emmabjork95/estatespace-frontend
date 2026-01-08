@@ -27,8 +27,7 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
-
+  
   useEffect(() => {
     const getUser = async () => {
       const { data, error } = await supabase.auth.getUser();

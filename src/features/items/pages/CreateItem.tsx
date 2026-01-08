@@ -102,17 +102,16 @@ const CreateItem = () => {
 
   return (
     <div className="createItemPage">
-      <div className="createItemCard">
+      <div className="createCard">
         <div className="createItemHeader">
           <h2>Skapa föremål</h2>
-        
         </div>
 
         {errorMessage && (
-          <div className="createItemAlert createItemAlert--error">
-            <span className="createItemAlertText">{errorMessage}</span>
+          <div className="Alert Alert--error">
+            <span className="AlertText">{errorMessage}</span>
             <button
-              className="createItemAlertClose"
+              className="AlertClose"
               type="button"
               onClick={() => setErrorMessage(null)}
               aria-label="Stäng meddelande"

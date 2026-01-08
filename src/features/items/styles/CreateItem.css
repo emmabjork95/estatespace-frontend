@@ -1,20 +1,8 @@
 .createItemPage {
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   padding: 32px 16px;
-}
-
-.createItemCard {
-  width: 100%;
-  max-width: 520px;
-
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-
-  padding: 22px;
 }
 
 .createItemHeader h2 {
@@ -29,45 +17,6 @@
   font-size: 14px;
   line-height: 1.4;
 }
-
-
-.createItemAlert {
-  margin-top: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  border: 1px solid transparent;
-
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.createItemAlertText {
-  line-height: 1.35;
-}
-
-.createItemAlertClose {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.65);
-  font-size: 14px;
-  padding: 2px 6px;
-  border-radius: 8px;
-}
-
-.createItemAlertClose:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.createItemAlert--error {
-  background: rgba(220, 20, 60, 0.08);
-  border-color: rgba(220, 20, 60, 0.25);
-  color: #8b0a21;
-}
-
 
 .createItemForm {
   margin-top: 18px;
@@ -86,46 +35,41 @@
   font-weight: 600;
 }
 
-.createItemInput {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  outline: none;
-  font-size: 14px;
-  font-family: inherit;
-  background: #fff;
-}
-
-.createItemInput:focus {
-  border-color: rgba(0, 0, 0, 0.35);
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
-}
-
-
-.createItemSelect {
-  appearance: none;
-  background-image: linear-gradient(
-      45deg,
-      transparent 50%,
-      rgba(0, 0, 0, 0.6) 50%
-    ),
-    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 50%, transparent 50%);
-  background-position: calc(100% - 18px) calc(50% - 2px),
-    calc(100% - 12px) calc(50% - 2px);
-  background-size: 6px 6px, 6px 6px;
-  background-repeat: no-repeat;
-  padding-right: 34px;
-}
-
-
+.createItemInput,
 .createItemFile {
   width: 100%;
   font-size: 14px;
   font-family: inherit;
-
   padding: 10px 12px;
   border-radius: 12px;
+  outline: none;
+  background: #fff;
+}
+
+.createItemInput {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.createItemInput:focus-visible,
+.createItemFile:focus-visible {
+  border-color: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+.createItemSelect {
+  appearance: none;
+  padding-right: 34px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(0, 0, 0, 0.6) 50%),
+    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.createItemFile {
   border: 1px dashed rgba(0, 0, 0, 0.2);
   background: rgba(0, 0, 0, 0.02);
   cursor: pointer;
@@ -135,14 +79,12 @@
   background: rgba(0, 0, 0, 0.035);
 }
 
-
 .createItemFileRow {
   margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-
   padding: 10px 12px;
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.03);
@@ -153,7 +95,6 @@
   font-size: 13px;
   color: rgba(0, 0, 0, 0.75);
   font-weight: 600;
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -171,8 +112,12 @@
   margin-top: 6px;
 }
 
-@media (max-width: 480px) {
-  .createItemCard {
-    padding: 18px;
+.createCard {
+  padding: 18px;
+}
+
+@media (min-width: 480px) {
+  .createCard {
+    padding: 24px;
   }
 }

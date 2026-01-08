@@ -1,0 +1,93 @@
+
+
+.error-message {
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(220, 20, 60, 0.08);
+  border: 1px solid rgba(220, 20, 60, 0.22);
+  color: #8b0a21;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.card1 {
+  width: min(520px, 92vw);
+  border-radius: 16px;
+  padding: 26px 24px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.createCard {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+
+  padding: 22px;
+}
+
+
+/* STYLING*/
+.page {
+min-height: 100vh;
+    width: 100%;
+    display: grid;
+  place-items: center;
+  padding: 28px 16px;
+  background: transparent;
+}
+
+
+/* ALERTS */
+.Alert {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  border: 1px solid ;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.AlertClose {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.AlertClose:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.Alert--error {
+  background: rgba(220, 20, 60, 0.08);
+  border-color: rgba(220, 20, 60, 0.22);
+  color: #8b0a21;
+}
+
+.Alert--success {
+  background: rgba(0, 128, 0, 0.08);
+  border-color: rgba(0, 128, 0, 0.25);
+  color: #0d5f2a;
+}
+
+.AlertText {
+    line-height: 1.35;
+}
+
+.Alert--info {
+  background: rgba(88, 101, 242, 0.08);
+  border-color: rgba(88, 101, 242, 0.22);
+  color: #2c3ccf;
+}

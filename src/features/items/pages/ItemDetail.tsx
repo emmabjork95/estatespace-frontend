@@ -6,7 +6,6 @@ import "../../../shared/components/ui/Buttons.css";
 import { STATUS_LABELS, type Item, type Status } from "../ItemsTypes";
 
 
-
 type InterestRow = {
   profiles_id: string;
   interest: "interested" | "declined";
@@ -28,14 +27,10 @@ type InterestUI = {
 const ItemDetail = () => {
   const navigate = useNavigate();
   const { itemsID } = useParams();
-
   const [item, setItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-
-
   const [isMember, setIsMember] = useState(false);
 
   const [interestList, setInterestList] = useState<InterestUI[]>([]);
@@ -114,7 +109,6 @@ if (memberError || !memberRow) {
 } else {
   setIsMember((memberRow.role ?? "").toLowerCase() === "member");
 }
-
 
     const { data: interestRows, error: interestError } = await supabase
       .from("item_interests")
@@ -315,7 +309,6 @@ if (memberError || !memberRow) {
                 <p className="itemDescription">{item.description}</p>
               </div>
             )}
-
 
             <div className="itemSection">
               <h3 className="itemSectionTitle">Markeringar</h3>
